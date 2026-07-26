@@ -1,0 +1,28 @@
+# Physics Failure-Mode Register
+
+All incidents begin as hypotheses. A reproduced incident gains replay/input trace, content/hash,
+browser/device, severity, mitigation, owner, and lasting regression evidence.
+
+| ID      | Case and classification                                      | Reproduction / observable                                                   | Severity | Required mitigation and regression                                  | Status                          |
+| ------- | ------------------------------------------------------------ | --------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------- | ------------------------------- |
+| PFM-001 | Small input bifurcation — input/level defect                 | ±5% magnitude or ±1 step around tutorial golden drops success below 90%     | Critical | Widen corridor via control/geometry; perturbation test              | Open hypothesis                 |
+| PFM-002 | Stick-slip — physics/material defect                         | Apple remains stuck then releases on visually equivalent tilt               | High     | Central material profile; threshold sweep; replay                   | Open hypothesis                 |
+| PFM-003 | Sleep/wake mismatch — physics defect                         | World tilt changes but relevant body remains asleep or wakes inconsistently | Critical | Explicit wake policy/verification; same-command replay              | Open hypothesis                 |
+| PFM-004 | Wedge/unintended stable state — level/soft-lock defect       | Objective incomplete, velocities settle, no reachable recovery              | High     | Watchdog classification and free retry; wedge fixture               | Lab case planned                |
+| PFM-005 | Pileup/contact ordering — physics instability                | Simultaneous contacts diverge or duplicate terminal event                   | Critical | Stable event ordering and state hash; pileup fixture                | Lab case planned                |
+| PFM-006 | Joint-limit reversal — physics instability                   | Platform oscillates, explodes, or exceeds bound after sudden reverse        | Critical | Joint assertion/fixture; consider constrained authored alternative  | Lab case planned                |
+| PFM-007 | Tunnelling/high speed — physics defect                       | Fast object crosses thin surface/goal without contact                       | Critical | CCD only on proven object; high-speed fixture                       | Lab case planned                |
+| PFM-008 | Fragility threshold noise — physics/rule defect              | One noisy contact frame breaks bottle below readable impact                 | Critical | Accumulated/tolerant rule; low/medium/high tests                    | Lab case planned                |
+| PFM-009 | Mesh/collider/pivot/COM mismatch — art integration defect    | Overlay shows floating, penetration, wrong pivot, or misleading rest        | Critical | Shared dimensions and overlay baseline                              | Lab demonstration planned       |
+| PFM-010 | Off-camera/occluded causal chain — camera/readability defect | Terminal event occurs behind foreground or outside frame                    | High     | Composition/fixed camera/bounded between-action framing             | Open hypothesis                 |
+| PFM-011 | Pointer cancellation/gesture theft — input defect            | Browser cancellation leaves non-neutral target or injects command           | Critical | One pointer owner, capture, cancel-to-neutral test                  | Test planned                    |
+| PFM-012 | Input latency/overshoot — input/device defect                | p95 event-to-step >50 ms target or >80 ms minimum on real phone             | High     | Instrument queue; response tuning; device matrix                    | Physical-device blocked         |
+| PFM-013 | Frame stall/background/resume — lifecycle defect             | Catch-up advances hidden seconds or changes replay result                   | Critical | Clamp/clear accumulator, pause command, lifecycle test              | Test planned                    |
+| PFM-014 | Orientation/context loss — lifecycle/render defect           | Input mapping/world state corrupts or active run continues unseen           | Critical | Pause/recover state, resize normalization, E2E/manual case          | Test planned                    |
+| PFM-015 | Cross-browser/device replay divergence — determinism defect  | Periodic state hash differs for same build/content/commands                 | Critical | Block gate, capture first divergent step, compatible-version review | Browser/device evidence pending |
+| PFM-016 | Slow/high-speed basket capture mismatch — authority defect   | Slow valid entry bounces out or high-speed pass counts unfairly             | High     | Compare raw/lips/felt thresholds and corridor                       | Lab case planned                |
+| PFM-017 | Out-of-bounds not classified — rule defect                   | Required object exits reachable bounds while session remains playing        | High     | Immediate visible classification and free retry                     | Test planned                    |
+| PFM-018 | Invalid/ambiguous failure monetized — product violation      | Any offer follows `physics_invalid_state` or `ambiguous`                    | Critical | Firewall test; no provider in Phase 1                               | Policy protected                |
+
+No observed incident is yet closed. Automated and visual evidence will be linked by build/commit in
+`docs/PROJECT_STATE.md`; physical-device cases remain explicitly unverified.
