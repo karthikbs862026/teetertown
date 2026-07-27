@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const chromiumExecutablePath = process.env.TEETERTOWN_CHROMIUM_EXECUTABLE_PATH;
+const firefoxHeadful = process.env.TEETERTOWN_FIREFOX_HEADFUL === "1";
 const fallbackChromium =
   chromiumExecutablePath === undefined
     ? {}
@@ -21,8 +22,10 @@ const fallbackChromium =
       };
 
 const softwareWebglFirefox = {
+  headless: !firefoxHeadful,
   launchOptions: {
     firefoxUserPrefs: {
+      "gfx.webrender.all": true,
       "gfx.webrender.software": true,
       "webgl.disabled": false,
       "webgl.force-enabled": true

@@ -25,8 +25,22 @@ jobs:
       - run: npm run check:production
 
   browser-matrix:
+    name: browser-matrix (${{ matrix.engine }})
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - engine: chromium
+            projects: --project=chromium --project=mobile-chromium
+            headed: false
+          - engine: firefox
+            projects: --project=firefox
+            headed: true
+          - engine: webkit
+            projects: --project=webkit --project=mobile-webkit
+            headed: false
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,11 +48,19 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npx playwright install --with-deps ${{ matrix.engine }}
       - run: npm run build:lab
-      - run: npm run test:e2e:ci
+      - if: matrix.headed == false
+        run: npx playwright test ${{ matrix.projects }}
         env:
           TEETERTOWN_E2E_SERVER_COMMAND: npm run preview:e2e
+      - if: matrix.headed == true
+        run: xvfb-run --auto-servernum npx playwright test ${{ matrix.projects }}
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+          MOZ_WEBRENDER: "1"
+          TEETERTOWN_E2E_SERVER_COMMAND: npm run preview:e2e
+          TEETERTOWN_FIREFOX_HEADFUL: "1"
 
   scheduled-risk-suite:
     if: github.event_name == 'schedule'
