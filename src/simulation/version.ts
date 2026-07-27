@@ -5,8 +5,12 @@ export const GAME_VERSION =
 export const BUILD_COMMIT =
   typeof __TEETERTOWN_COMMIT_SHA__ === "undefined" ? "local" : __TEETERTOWN_COMMIT_SHA__;
 export const RAPIER_VERSION = "0.19.3";
+export const RAPIER_RUNTIME_VARIANT =
+  typeof __TEETERTOWN_RAPIER_RUNTIME_VARIANT__ === "undefined"
+    ? "compat-embedded-node"
+    : __TEETERTOWN_RAPIER_RUNTIME_VARIANT__;
 export const PHYSICS_VERSION = "phase1-physics-1";
-export const REPLAY_SCHEMA_VERSION = 1;
+export const REPLAY_SCHEMA_VERSION = 2;
 export const LEVEL_SCHEMA_VERSION = 1;
 export const MATERIAL_SCHEMA_VERSION = 1;
 export const SAVE_SCHEMA_VERSION = 1;

@@ -6,8 +6,17 @@ export const RAPIER_BOOTSTRAP_EXPECTED_HASH = "74e1d58f";
 
 let initialization: Promise<void> | undefined;
 
+function hasInitializer(value: unknown): value is { init: () => Promise<void> } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "init" in value &&
+    typeof value.init === "function"
+  );
+}
+
 export function initializeRapier(): Promise<void> {
-  initialization ??= RAPIER.init();
+  initialization ??= hasInitializer(RAPIER) ? RAPIER.init() : Promise.resolve();
   return initialization;
 }
 

@@ -19,3 +19,4 @@
 | 0015 | Diagnostics/privacy boundary          | Accepted                         |
 | 0016 | Admin-lab separation                  | Accepted                         |
 | 0017 | CI/CD/release/rollback                | Accepted boundary                |
+| 0018 | Separate Rapier WASM browser loader   | Accepted for Phase 1 lab         |

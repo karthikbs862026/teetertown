@@ -3,6 +3,7 @@ import {
   BUILD_COMMIT,
   GAME_VERSION,
   PHYSICS_VERSION,
+  RAPIER_RUNTIME_VARIANT,
   RAPIER_VERSION,
   REPLAY_SCHEMA_VERSION
 } from "./version";
@@ -30,6 +31,7 @@ export interface ReplayMetadata {
   readonly buildCommit: string;
   readonly gameVersion: string;
   readonly rapierVersion: string;
+  readonly rapierRuntimeVariant: string;
   readonly physicsVersion: string;
   readonly replaySchemaVersion: number;
   readonly levelId: SceneId;
@@ -60,6 +62,7 @@ export function createReplayMetadata(
     buildCommit: BUILD_COMMIT,
     gameVersion: GAME_VERSION,
     rapierVersion: RAPIER_VERSION,
+    rapierRuntimeVariant: RAPIER_RUNTIME_VARIANT,
     physicsVersion: PHYSICS_VERSION,
     replaySchemaVersion: REPLAY_SCHEMA_VERSION,
     levelId,

@@ -53,6 +53,17 @@ and topology changes enter through explicit fixed-step simulation commands.
 Input is disabled until ready. A failed self-test transitions to `fatal_error`; it never creates a
 fallback world.
 
+## Rapier runtime packaging
+
+Node simulation checks use exact `@dimforge/rapier3d-compat@0.19.3`. Vite browser builds alias that
+API surface to exact `@dimforge/rapier3d@0.19.3`, emitting WASM as a same-origin asset rather than
+embedding it in JavaScript. The singleton bootstrap handles the two official initialization
+contracts, but each session uses exactly one runtime.
+
+Replay schema 2 records `compat-embedded-node` or `modular-wasm-browser`. The semantic Rapier
+version alone is not sufficient identity because the two official package binaries are not
+byte-identical. See ADR-0018.
+
 ## Runtime states
 
 `boot`, `capability_check`, `loading`, `ready`, `tutorial`, `playing`, `paused`, `rewinding`,

@@ -9,9 +9,11 @@
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0",
+    "dev:e2e": "vite --host 127.0.0.1",
     "build": "tsc -b && vite build",
     "build:lab": "tsc -b && vite build --mode lab",
     "preview": "vite preview --host 0.0.0.0",
+    "preview:e2e": "vite preview --host 127.0.0.1",
     "typecheck": "tsc -b --pretty false",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
@@ -22,6 +24,7 @@
     "test:replay": "vitest run tests/simulation/replay.test.ts",
     "test:e2e": "playwright test",
     "test:e2e:chromium": "playwright test --project=chromium",
+    "test:e2e:ci": "playwright test --project=chromium --project=firefox --project=webkit --project=mobile-chromium --project=mobile-webkit",
     "test:visual": "playwright test tests/visual",
     "validate:content": "node --import tsx scripts/validate-content.ts",
     "check:boundaries": "node --import tsx scripts/check-boundaries.ts",
@@ -33,6 +36,7 @@
     "check:production": "npm run build && npm run check:budgets && npm run check:lab-leak"
   },
   "dependencies": {
+    "@dimforge/rapier3d": "0.19.3",
     "@dimforge/rapier3d-compat": "0.19.3",
     "three": "0.185.1"
   },
