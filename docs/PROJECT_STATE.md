@@ -32,9 +32,9 @@
 
 ## Gate blockers
 
-1. The production JavaScript chunk is approximately 949 KiB gzip, above the provisional 650 KiB
-   review threshold. The exact-pinned compatibility Rapier module is approximately 810 KiB gzip by
-   itself. Changing package/loader strategy requires an ADR and replay migration evidence.
+1. The production JavaScript chunk is 950.1 KiB gzip, above the provisional 650 KiB review
+   threshold. The exact-pinned compatibility Rapier module is approximately 810 KiB gzip by itself.
+   Changing package/loader strategy requires an ADR and replay migration evidence.
 2. Playwright 1.62.0 is installed, but no browser binary exists in this workspace. Chromium download
    returned a zero-byte/truncated archive, so browser, WebGL, screenshot, visual, render-lifecycle,
    and emulated-phone claims remain not run.

@@ -11,7 +11,7 @@
 | Frame loop avoids unbounded allocation                   | Stable registries and manual allocation profile after warm-up  | Headless p95 0.2494 ms; browser profile absent | Pending browser              |
 | Dependency graph is acyclic                              | Circular/import-boundary scripts pass                          | 24+ modules checked, no cycle                  | Pass                         |
 | Production bundle excludes admin lab                     | Audit script passes exact markers                              | Lab-leak audit passes                          | Pass                         |
-| Public JS bundle stays within provisional budget         | Entry + chunks ≤650 KiB gzip review; first payload 4–6 MB max  | JS approximately 949 KiB gzip                  | **Fail / blocks gate**       |
+| Public JS bundle stays within provisional budget         | Entry + chunks ≤650 KiB gzip review; first payload 4–6 MB max  | JS 950.1 KiB gzip                              | **Fail / blocks gate**       |
 | Test feedback remains small-team practical               | Fast checks ≤2 min local; browser checks separated             | Headless suite ≈2 s; browser separate          | Pass for headless            |
 | Contributor can locate ownership                         | README, AGENTS, architecture, state, ADR index present         | Repository inspection                          | Provisional pass             |
 

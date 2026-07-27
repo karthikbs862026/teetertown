@@ -27,7 +27,7 @@ still need browser, device, or player results.
 - No physical Android or iOS/Safari control, replay, latency, thermal, or memory evidence.
 - No representative player comprehension or failure-attribution evidence.
 - Cross-browser automated evidence depends on obtaining Playwright browser binaries.
-- The pinned compatibility Rapier module produces an approximately 949 KiB gzip production
-  JavaScript chunk, above the provisional 650 KiB review threshold.
+- The pinned compatibility Rapier module produces a 950.1 KiB gzip production JavaScript chunk,
+  above the provisional 650 KiB review threshold.
 - The canonical master header says v2.1 while its footer says “Prompt version: 2.0”; the file is
   preserved byte-for-byte and treated as v2.1 by its title and companion change log.

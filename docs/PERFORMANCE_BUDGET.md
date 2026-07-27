@@ -43,7 +43,7 @@ first-load output above 6 MB blocks the provisional Phase-1 production-shaped bu
 
 - Headless Node v24.14.0, 4,000 fixed steps: 0.2494 ms p95, 9.4454 ms maximum. This is not
   browser/device evidence.
-- Production JavaScript: approximately 949 KiB gzip, so the 650 KiB chunk gate fails.
+- Production JavaScript: 950.1 KiB gzip, so the 650 KiB chunk gate fails.
 - Exact-pinned `@dimforge/rapier3d-compat@0.19.3` is approximately 810 KiB gzip before application
   bundling. Resolution requires an ADR-backed loader/package experiment; the threshold is not
   silently waived.

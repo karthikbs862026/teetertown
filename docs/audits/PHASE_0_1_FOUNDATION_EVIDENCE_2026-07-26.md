@@ -62,7 +62,7 @@ convergence regression.
 | `npm run build:lab`                          | Pass                                                          |
 | `npm run check:lab-leak`                     | Pass after compile-time lab separation fix                    |
 | `npm run profile:headless`                   | Pass; 4,000 steps, p95 0.2494 ms in Node                      |
-| `npm run check:budgets`                      | **Fail:** production JS approximately 949 KiB gzip >650 KiB   |
+| `npm run check:budgets`                      | **Fail:** production JS 950.1 KiB gzip >650 KiB               |
 | `npx playwright install chromium`            | **Not available:** default cache path could not be created    |
 | workspace-scoped Playwright Chromium install | **Fail:** CDN response produced a zero-byte/truncated archive |
 
