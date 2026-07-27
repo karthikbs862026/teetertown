@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
+import { gotoReadyGraybox } from "../support/appReady";
 
 test("desktop graybox is readable with collider overlay", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name.startsWith("mobile-"), "Desktop project only.");
-  await page.goto("/");
-  await expect(page.locator("canvas.game-canvas")).toBeVisible();
+  await gotoReadyGraybox(page);
   await page.waitForTimeout(500);
   await page.screenshot({
     path: testInfo.outputPath("tutorial-desktop.png"),
@@ -16,8 +16,7 @@ test("desktop graybox is readable with collider overlay", async ({ page }, testI
 
 test("phone layout keeps the stage and controls on-screen", async ({ page }, testInfo) => {
   test.skip(!testInfo.project.name.startsWith("mobile-"), "Mobile project only.");
-  await page.goto("/");
-  await expect(page.locator("canvas.game-canvas")).toBeVisible();
+  await gotoReadyGraybox(page);
   await page.waitForTimeout(500);
   await page.screenshot({
     path: testInfo.outputPath("tutorial-phone.png"),
@@ -34,7 +33,7 @@ test("camera variants and adversarial fixture have reviewable desktop baselines"
   page
 }, testInfo) => {
   test.skip(testInfo.project.name.startsWith("mobile-"), "Desktop project only.");
-  await page.goto("/");
+  await gotoReadyGraybox(page);
   for (const [value, fileName] of [
     ["perspective_fixed", "tutorial-perspective.png"],
     ["bounded_event", "tutorial-bounded.png"]

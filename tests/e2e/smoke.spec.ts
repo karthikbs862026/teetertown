@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
+import { gotoReadyGraybox } from "../support/appReady";
 
 test("boots the graybox and pauses fixed simulation time", async ({ page }) => {
-  await page.goto("/");
+  await gotoReadyGraybox(page);
   await expect(page.getByRole("heading", { name: "Teetertown" })).toBeVisible();
-  await expect(page.locator("canvas.game-canvas")).toBeVisible();
   await expect(page.locator(".status-pill")).toContainText("Drag left");
   await expect(page.locator(".stage")).toHaveAttribute("data-rapier-bootstrap-hash", "74e1d58f");
   await expect(page.locator(".stage")).toHaveAttribute(
@@ -21,9 +21,8 @@ test("boots the graybox and pauses fixed simulation time", async ({ page }) => {
 });
 
 test("a sustained left drag produces the constrained golden capture", async ({ page }) => {
-  await page.goto("/");
+  await gotoReadyGraybox(page);
   const canvas = page.locator("canvas.game-canvas");
-  await expect(canvas).toBeVisible();
   const bounds = await canvas.boundingBox();
   expect(bounds).not.toBeNull();
   if (bounds === null) {
@@ -43,7 +42,7 @@ test("a sustained left drag produces the constrained golden capture", async ({ p
 test("browser modular WASM reproduces the headless command-from-step-one golden", async ({
   page
 }) => {
-  await page.goto("/");
+  await gotoReadyGraybox(page);
   await page.waitForFunction(() => window.__TEETERTOWN_LAB_API__ !== undefined);
   const parity = await page.evaluate(async () => {
     const api = window.__TEETERTOWN_LAB_API__;
@@ -62,7 +61,7 @@ test("browser modular WASM reproduces the headless command-from-step-one golden"
 });
 
 test("restarting a paused fixture resumes from a clean fixed-step clock", async ({ page }) => {
-  await page.goto("/");
+  await gotoReadyGraybox(page);
   const metrics = page.locator(".metrics");
   await page.getByRole("button", { name: "Pause" }).click();
   await expect(page.locator(".status-pill")).toContainText("Paused");
@@ -74,7 +73,7 @@ test("restarting a paused fixture resumes from a clean fixed-step clock", async 
 });
 
 test("lab build exposes the adversarial fixture without a second renderer", async ({ page }) => {
-  await page.goto("/");
+  await gotoReadyGraybox(page);
   await page.locator('select[data-lab="scene"]').selectOption("adversarial-lab");
   await expect(page.locator(".status-pill")).toContainText("Internal risk fixtures");
   await expect(page.locator("canvas.game-canvas")).toHaveCount(1);
@@ -84,7 +83,7 @@ test("lab build exposes the adversarial fixture without a second renderer", asyn
 test("twenty scene transitions retain one canvas and stable tutorial resources", async ({
   page
 }) => {
-  await page.goto("/");
+  await gotoReadyGraybox(page);
   const metrics = page.locator(".metrics");
   await expect(metrics).toHaveAttribute("data-geometries", /\d+/);
   const expectedResources = await metrics.evaluate((element) => ({
@@ -113,7 +112,7 @@ test("twenty scene transitions retain one canvas and stable tutorial resources",
 test("WebGL context loss pauses fixed steps and restores through the original extension", async ({
   page
 }) => {
-  await page.goto("/");
+  await gotoReadyGraybox(page);
   await expect(page.locator(".status-pill")).toContainText("Drag left");
   const extension = await page.locator("canvas.game-canvas").evaluateHandle((canvas) => {
     if (!(canvas instanceof HTMLCanvasElement)) {
@@ -147,7 +146,7 @@ test("WebGL context loss pauses fixed steps and restores through the original ex
 });
 
 test("pointer cancellation and lost capture neutralize the active command", async ({ page }) => {
-  await page.goto("/");
+  await gotoReadyGraybox(page);
   const canvas = page.locator("canvas.game-canvas");
   const metrics = page.locator(".metrics");
   const bounds = await canvas.boundingBox();
@@ -182,12 +181,13 @@ test("pointer cancellation and lost capture neutralize the active command", asyn
     return true;
   });
   expect(released).toBe(true);
+  await page.mouse.move(centerX - 23, centerY);
   await expect(metrics).toHaveAttribute("data-input-active", "false");
   await page.mouse.up();
 });
 
 test("all lab camera variants keep the gameplay canvas available", async ({ page }) => {
-  await page.goto("/");
+  await gotoReadyGraybox(page);
   for (const camera of ["perspective_fixed", "bounded_event", "orthographic_fixed"]) {
     await page.locator('select[data-lab="camera"]').selectOption(camera);
     await expect(page.locator("canvas.game-canvas")).toHaveAttribute("data-camera-model", camera);

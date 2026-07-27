@@ -20,6 +20,16 @@ const fallbackChromium =
         }
       };
 
+const softwareWebglFirefox = {
+  launchOptions: {
+    firefoxUserPrefs: {
+      "gfx.webrender.software": true,
+      "webgl.disabled": false,
+      "webgl.force-enabled": true
+    }
+  }
+};
+
 export default defineConfig({
   testDir: ".",
   testMatch: ["tests/e2e/**/*.spec.ts", "tests/visual/**/*.spec.ts"],
@@ -39,7 +49,7 @@ export default defineConfig({
     },
     {
       name: "firefox",
-      use: { ...devices["Desktop Firefox"] }
+      use: { ...devices["Desktop Firefox"], ...softwareWebglFirefox }
     },
     {
       name: "webkit",
