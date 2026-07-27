@@ -65,6 +65,14 @@ Acceptance required:
   1/1, and a non-retrying 30-second performance profile. That profile records 100 transitions,
   −0.29% final/+0.75% maximum heap drift, exact resources, FMI 291.7 ms, steady-frame p95 33.3 ms,
   and physics p95 0.5 ms.
+- The owner explicitly authorized an account-restricted Gate-1 evidence deployment. Sites version 1
+  at [teetertown-game.karthik-bs86.chatgpt.site](https://teetertown-game.karthik-bs86.chatgpt.site)
+  succeeded on 2026-07-27 and serves branch commit `c52b63d`, source tree `e1c8635`, release ID
+  `c52b63d35d8d853c8c9eee85e7d9f624cb375057`, and asset-set hash `5a90207a484a1048`. The hosting
+  boundary passed its production artifact build, byte-identical root response test, and SHA-256/byte
+  checks for every release-manifest asset. Its cloud preview could not create a WebGL context, so no
+  visual or interaction claim is added beyond the existing packaged Chromium/Pixel evidence;
+  physical-device validation remains open.
 - Five screenshots were visually inspected. Current tutorial/goal/causal geometry is visible on
   desktop and narrow Pixel emulation; perspective, bounded-event, and adversarial compositions are
   reviewable.
@@ -110,13 +118,16 @@ Acceptance required:
 
 - **Decided with current evidence:** exact Rapier version remains `0.19.3`; browser packaging uses
   separate WASM; runtime variant is replay identity; lab tooling remains compile-time excluded;
-  release sets are hash-verified/atomically activated; contacts and sleeping use ADR-0019 policy.
+  release sets are hash-verified/atomically activated; contacts and sleeping use ADR-0019 policy;
+  the owner-restricted live build is an evidence-distribution surface only and does not advance the
+  gate.
 - **Provisional:** fixed orthographic remains the gameplay-camera default; gravity-vector tilt and
   visible constrained capture remain leading candidates.
 - **Blocked:** final control/camera/capture selection, Gate-1 GO, physical-device tiers, and player
   trust claims.
 - **Rejected:** threshold waiver, hidden rescue, physics downgrade for FPS, final art, mass content,
-  monetization, backend, production deployment, and cross-version ranked comparison.
+  monetization, backend, public/general-audience production release before Gate-1 GO, and
+  cross-version ranked comparison.
 
 ## Recommendation
 
@@ -126,5 +137,6 @@ representative-player evidence.
 
 ## Next action
 
-Execute the prepared owner-run physical Android/iOS and representative-player protocols while PR #1
-remains draft. Do not expand campaign content or meta systems yet.
+Use the owner-restricted live build to execute the prepared physical Android/iOS and
+representative-player protocols while PR #1 remains draft. Do not expand campaign content or meta
+systems yet.
