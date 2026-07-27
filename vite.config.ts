@@ -10,10 +10,14 @@ export default defineConfig(({ mode }) => ({
   define: {
     __TEETERTOWN_BUILD_VERSION__: JSON.stringify(packageMetadata.version),
     __TEETERTOWN_COMMIT_SHA__: JSON.stringify(process.env.GITHUB_SHA ?? "local"),
+    __TEETERTOWN_RELEASE_ID__: JSON.stringify(
+      process.env.TEETERTOWN_RELEASE_ID ?? process.env.GITHUB_SHA ?? "local"
+    ),
     __TEETERTOWN_LAB_ENABLED__: JSON.stringify(mode !== "production"),
     __TEETERTOWN_RAPIER_RUNTIME_VARIANT__: JSON.stringify("modular-wasm-browser")
   },
   build: {
+    outDir: process.env.TEETERTOWN_OUT_DIR ?? "dist",
     target: "es2022",
     sourcemap: true,
     assetsInlineLimit: 0,

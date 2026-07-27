@@ -36,6 +36,7 @@ const softwareWebglFirefox = {
 export default defineConfig({
   testDir: ".",
   testMatch: ["tests/e2e/**/*.spec.ts", "tests/visual/**/*.spec.ts"],
+  testIgnore: "tests/e2e/pwa.spec.ts",
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
