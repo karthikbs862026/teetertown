@@ -39,23 +39,25 @@ Lambda-only `--single-process` was not used; SwiftShader/WebGL flags, task-scope
 system font configuration were supplied. The package is not a game dependency and no browser/font
 binary is committed or shipped.
 
-GitHub Actions is separately configured to install official Playwright Chromium, Firefox, and WebKit
-binaries on pull requests.
+GitHub Actions installs official Playwright browser binaries in engine-isolated pull-request jobs:
+Chromium plus Pixel 7 emulation, headed Firefox under Xvfb/software WebGL, and WebKit plus iPhone 13
+emulation. This path executed successfully on the final PR head.
 
 ## 4. Physics/replay identity
 
-| Evidence                                | Result                                                           |
-| --------------------------------------- | ---------------------------------------------------------------- |
-| Node bootstrap                          | `74e1d58f`                                                       |
-| Actual Chromium bootstrap               | `74e1d58f`                                                       |
-| Node command-from-step-one golden       | Success, step 278, `c965c01f`                                    |
-| Actual Chromium modular-WASM golden     | Success, step 278, `c965c01f`                                    |
-| Raw capture                             | `object_out_of_bounds`, step 264, `e18433eb`                     |
-| Human-sized scripted perturbation sweep | 10/10 success                                                    |
-| Identical headless replay comparison    | Periodic and final hashes match                                  |
-| One-command perturbation                | Divergence detected                                              |
-| Content/material hashes                 | Tutorial `5aac8b9a`; lab `1e4655f2`; materials `05d66915`        |
-| Runtime identity                        | `compat-embedded-node` / `modular-wasm-browser`, replay schema 2 |
+| Evidence                                 | Result                                                           |
+| ---------------------------------------- | ---------------------------------------------------------------- |
+| Node bootstrap                           | `74e1d58f`                                                       |
+| Local Chromium bootstrap                 | `74e1d58f`                                                       |
+| GitHub Chromium/Firefox/WebKit bootstrap | `74e1d58f` in every desktop and emulated-phone project           |
+| Node command-from-step-one golden        | Success, step 278, `c965c01f`                                    |
+| Browser modular-WASM golden              | Success, step 278, `c965c01f` locally and in every CI project    |
+| Raw capture                              | `object_out_of_bounds`, step 264, `e18433eb`                     |
+| Human-sized scripted perturbation sweep  | 10/10 success                                                    |
+| Identical headless replay comparison     | Periodic and final hashes match                                  |
+| One-command perturbation                 | Divergence detected                                              |
+| Content/material hashes                  | Tutorial `5aac8b9a`; lab `1e4655f2`; materials `05d66915`        |
+| Runtime identity                         | `compat-embedded-node` / `modular-wasm-browser`, replay schema 2 |
 
 A first browser assertion incorrectly expected a human-style drag that began after neutral settling
 to match the command-from-step-one hash. The session correctly captured later with a different state
@@ -101,6 +103,40 @@ review showed that status text alone could admit a transition-frame capture.
 This is actual desktop Chromium and viewport/device emulation. It is not physical Android, physical
 iOS, Safari, touch-latency, thermal, battery, or device-memory evidence.
 
+### Pull-request cross-browser evidence
+
+Draft PR [#1](https://github.com/karthikbs862026/teetertown/pull/1) produced an attributable
+failure/fix chain instead of a threshold waiver:
+
+1. Run `30247550039` exposed headless Firefox renderer startup failures and a non-portable WebKit
+   lost-capture test assumption.
+2. Run `30248396365` added fatal boot diagnostics and confirmed Firefox stopped at
+   `THREE.WebGLRenderer: Error creating WebGL context`; WebKit passed after capture processing was
+   triggered with the next pointer event.
+3. Run `30248817568` isolated engines and ran Firefox headed under Xvfb/software WebGL. Chromium and
+   WebKit passed; Firefox passed 10 cases and failed only because the test hardcoded pointer ID `1`.
+4. Final run [`30249144668`](https://github.com/karthikbs862026/teetertown/actions/runs/30249144668)
+   on commit `f98c286` used the pointer ID actually emitted by each browser and passed every
+   required job.
+
+Final browser counts:
+
+| CI project group                     | Result                         |
+| ------------------------------------ | ------------------------------ |
+| Chromium + Pixel 7 emulation         | 21 passed, 3 viewport skips    |
+| Headed Firefox + Xvfb/software WebGL | 11 passed, 1 viewport skip     |
+| WebKit + iPhone 13 emulation         | 21 passed, 3 viewport skips    |
+| Total                                | 53 passed, 7 intentional skips |
+
+All seven skips are explicit desktop-versus-mobile visual-baseline scopes. There were no unexpected
+skips, retries, or failures on the final run. The exact parity, pointer cancellation, paused
+restart, context loss/restore, 20-transition resource, camera, and lab-isolation cases passed in
+every applicable engine project.
+
+These are official Playwright desktop engines and device/viewport emulations on a GitHub Linux
+runner. WebKit emulation is not physical iOS Safari, and Xvfb/software WebGL is not a physical
+Firefox GPU/device profile.
+
 ## 6. Bundle and separation evidence
 
 Final production-shaped output:
@@ -130,13 +166,13 @@ env TEETERTOWN_CHROMIUM_EXECUTABLE_PATH=/tmp/chromium \
   npx playwright test --project=chromium --project=mobile-chromium
 ```
 
-The final post-format gate repeated successfully: 13 unit/simulation files with 21 tests, production
-budget/lab-leak checks, lab build, and the 21-pass/3-intentional-skip Chromium matrix. GitHub
-Actions results are recorded only after the draft pull request actually runs.
+The final local post-format gate repeated successfully: 13 unit/simulation files with 21 tests,
+production budget/lab-leak checks, lab build, and the 21-pass/3-intentional-skip Chromium matrix.
+GitHub Actions final run `30249144668` separately passed static/production plus the
+53-pass/7-intentional-skip engine matrix.
 
 ## 8. Remaining blockers and stop conditions
 
-- Firefox, desktop WebKit, and mobile WebKit: configured, not yet run.
 - Physical Android/iOS Safari: not run.
 - Representative-player comprehension/execution/failure attribution: not run.
 - Separate-WASM offline/service-worker update atomicity: not run.
@@ -149,6 +185,7 @@ or correctly understood strategy that representative players cannot repeat.
 
 ## 9. Recommendation
 
-**ITERATE.** The two locally solvable blockers are resolved with evidence. Gate 1 remains blocked
-from **GO** by cross-browser CI, physical-device, and representative-player evidence. Do not expand
-campaign content, art production, meta systems, or monetization yet.
+**ITERATE.** The payload, executable-local-browser, and cross-browser CI blockers are resolved with
+evidence. Gate 1 remains blocked from **GO** by physical-device and representative-player evidence;
+offline/update, browser profiling/soak, and dedicated adversarial assertions also remain open. Do
+not expand campaign content, art production, meta systems, or monetization yet.

@@ -23,11 +23,14 @@ service worker.
 
 ## Current skeleton limits
 
-GitHub Actions is configured for static/simulation/build/budget checks and a Playwright matrix using
-Chromium, Firefox, WebKit, Pixel 7 emulation, and iPhone 13 emulation. The matrix must run on the
-draft PR before it becomes evidence; configuration alone is not a pass.
+GitHub Actions runs static/simulation/build/budget checks plus three engine-isolated Playwright
+jobs: Chromium with Pixel 7 emulation, headed Firefox under Xvfb/software WebGL, and WebKit with
+iPhone 13 emulation. Final draft-PR run
+[`30249144668`](https://github.com/karthikbs862026/teetertown/actions/runs/30249144668) passed:
+Firefox 11/1 intentional skip, Chromium 21/3, WebKit 21/3, and static/production.
 
 Local built-preview evidence uses actual npm-packaged Chromium plus Pixel 7 viewport/device
-emulation. Scheduled fuzz/soak, physical devices, staging hosting, artifact retention, offline
+emulation. The engine split keeps failures attributable and avoids one browser hiding another's
+result. Scheduled fuzz/soak, physical devices, staging hosting, artifact retention, offline
 WASM/service-worker faults, and rollback execution remain unverified. No paid CI or deployment
 service was added.

@@ -20,7 +20,8 @@ Acceptance required:
 - an actual browser executing WebGL, golden parity, input cancellation, lifecycle, context loss,
   camera, phone-emulation, and screenshot checks;
 - lab-only fault/parity tooling absent from production;
-- Firefox/WebKit, physical-device, and player gaps kept explicit until actually run.
+- official Playwright Chromium, Firefox, WebKit, and phone-emulation projects actually run in CI,
+  with physical-device and player gaps kept explicit.
 
 ## Last verified
 
@@ -29,9 +30,10 @@ Acceptance required:
 - ADR-0018 emits browser Rapier as a same-origin WASM asset. Replay schema 2 records
   `compat-embedded-node` or `modular-wasm-browser`.
 - Tutorial content remains hash `5aac8b9a`; adversarial lab `1e4655f2`; materials `05d66915`.
-- Rapier bootstrap remains `74e1d58f` in Node and actual Chromium.
+- Rapier bootstrap remains `74e1d58f` in Node, actual local Chromium, and every GitHub browser
+  project.
 - The command-from-step-one constrained golden remains success at step 278/hash `c965c01f` in Node
-  and actual Chromium.
+  and every Chromium, Firefox, WebKit, Pixel 7 emulation, and iPhone 13 emulation CI project.
 - Raw capture remains `object_out_of_bounds` at step 264/hash `e18433eb`.
 - Ten traces across ±5% magnitude and a one-step activation delay remain 10/10 successful.
 - Identical headless runs match periodic/final replay hashes; a perturbed command is detected.
@@ -44,6 +46,14 @@ Acceptance required:
 - Chromium cases include sustained-drag capture, exact browser/headless parity, paused restart,
   pointer cancel/lost capture, WebGL loss/restore with a frozen fixed-step counter, 20 scene
   transitions with one canvas/stable registries, and all three camera variants.
+- GitHub Actions run
+  [`30249144668`](https://github.com/karthikbs862026/teetertown/actions/runs/30249144668) on commit
+  `f98c286` passed every required job: Firefox 11 passed/1 viewport skip; Chromium and Pixel 7
+  emulation 21 passed/3 viewport skips; WebKit and iPhone 13 emulation 21 passed/3 viewport skips;
+  static/simulation/production checks passed.
+- Headed Firefox under Xvfb/software WebGL passes renderer boot and context loss/restore. The
+  browser matrix uses each engine's actual pointer ID; hardcoding pointer ID `1` was rejected as a
+  non-portable test assumption.
 - Five screenshots were visually inspected. Current tutorial/goal/causal geometry is visible on
   desktop and narrow Pixel emulation; perspective, bounded-event, and adversarial compositions are
   reviewable.
@@ -52,23 +62,25 @@ Acceptance required:
 
 1. **Production JavaScript budget:** closed for the current build under ADR-0018.
 2. **No executable local browser:** closed for Chromium through a task-scoped npm-packaged
-   executable. This does not imply Firefox/WebKit or device evidence.
+   executable. Firefox/WebKit evidence is CI-scoped; none of these runs imply physical devices.
 3. **Narrow orthographic goal clipping:** corrected with a minimum horizontal frustum and unit,
    browser-layout, and screenshot evidence.
 4. **Camera screenshot readiness ambiguity:** corrected with an explicit rendered camera-model
    marker and fresh-frame wait.
-5. **Restart while paused silently retaining the paused clock:** corrected and covered in Chromium.
+5. **Restart while paused silently retaining the paused clock:** corrected and covered in all CI
+   browser projects.
+6. **Firefox/WebKit CI execution:** closed for official Playwright engine builds. Firefox uses
+   headed Xvfb/software WebGL because GitHub's headless Linux runner cannot create its context.
 
 ## Remaining Gate-1 blockers
 
-1. GitHub Actions has not yet reported the configured Firefox, WebKit, and mobile-WebKit runs.
-2. No physical Android Chrome or iPhone/iOS Safari determinism, touch latency, thermal, battery,
+1. No physical Android Chrome or iPhone/iOS Safari determinism, touch latency, thermal, battery,
    memory, orientation, background/resume, or context evidence exists.
-3. No representative-player comprehension, correct-strategy repeatability, failure-attribution, or
+2. No representative-player comprehension, correct-strategy repeatability, failure-attribution, or
    comfort evidence exists.
-4. Separate-WASM offline/service-worker update atomicity is unverified.
-5. Browser frame-time/heap/soak and real first-meaningful-interaction measurements are absent.
-6. Dedicated assertions for contact ordering, sleep/wake, CCD, and joint reversal remain incomplete.
+3. Separate-WASM offline/service-worker update atomicity is unverified.
+4. Browser frame-time/heap/soak and real first-meaningful-interaction measurements are absent.
+5. Dedicated assertions for contact ordering, sleep/wake, CCD, and joint reversal remain incomplete.
 
 ## Decisions and confidence
 
@@ -83,11 +95,13 @@ Acceptance required:
 
 ## Recommendation
 
-**ITERATE.** The payload and local-browser blockers are resolved, but Gate 1 cannot become **GO**
-without cross-browser CI plus physical-device and representative-player evidence.
+**ITERATE.** The payload, local-browser, and cross-browser CI blockers are resolved, but Gate 1
+cannot become **GO** without physical-device and representative-player evidence. Offline update,
+browser profiling/soak, and the remaining adversarial assertions also stay open.
 
 ## Next action
 
-Publish the reviewed blocker iteration to the feature branch, open a draft pull request, inspect the
-GitHub Actions matrix, and record its actual results. Then prepare owner-run physical Android/iOS
-and representative-player protocols; do not expand campaign content or meta systems yet.
+Execute the prepared owner-run physical Android/iOS and representative-player protocols. In
+parallel, add offline WASM/service-worker fault coverage, browser profiling/soak, and dedicated
+contact-ordering, sleep/wake, CCD, and joint-reversal assertions. Do not expand campaign content or
+meta systems yet.

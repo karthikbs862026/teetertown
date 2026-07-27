@@ -47,15 +47,15 @@ and an updated decision/ADR; tests are not weakened to make CI pass.
 
 ## Initial browser/device matrix
 
-| Environment              | Automated                | Physical       | Purpose                                 |
-| ------------------------ | ------------------------ | -------------- | --------------------------------------- |
-| Desktop Chromium         | Required                 | N/A            | Primary smoke, trace, visual            |
-| Desktop Firefox          | Required where available | N/A            | Compatibility/divergence                |
-| Desktop WebKit           | Required where available | N/A            | WebKit regression signal                |
-| Mobile Chromium viewport | Required                 | Not equivalent | Responsive/touch event smoke            |
-| Mobile WebKit viewport   | Required                 | Not equivalent | Responsive/WebKit smoke                 |
-| Mid-range Android Chrome | No                       | Gate required  | Thumb latency, thermal, memory, replay  |
-| iPhone/iOS Safari        | No                       | Gate required  | WebKit lifecycle, audio, memory, replay |
+| Environment              | Automated | Physical       | Purpose                                 |
+| ------------------------ | --------- | -------------- | --------------------------------------- |
+| Desktop Chromium         | Required  | N/A            | Primary smoke, trace, visual            |
+| Desktop Firefox          | Required  | N/A            | Compatibility/divergence                |
+| Desktop WebKit           | Required  | N/A            | WebKit regression signal                |
+| Mobile Chromium viewport | Required  | Not equivalent | Responsive/touch event smoke            |
+| Mobile WebKit viewport   | Required  | Not equivalent | Responsive/WebKit smoke                 |
+| Mid-range Android Chrome | No        | Gate required  | Thumb latency, thermal, memory, replay  |
+| iPhone/iOS Safari        | No        | Gate required  | WebKit lifecycle, audio, memory, replay |
 
 ## Blocker-iteration status — 2026-07-27
 
@@ -64,7 +64,8 @@ and an updated decision/ADR; tests are not weakened to make CI pass.
   variants, and desktop screenshots pass.
 - Pixel 7 project: the same Chromium executable with Playwright device/viewport emulation passes the
   applicable checks and phone screenshot. This is not physical Android.
-- Firefox, desktop WebKit, and mobile WebKit are configured for the draft-PR workflow but remain not
-  run until GitHub Actions reports results.
+- GitHub Actions run `30249144668` passes official Playwright Chromium/Pixel, headed
+  Firefox/Xvfb/software-WebGL, and WebKit/iPhone projects: 53 passed, 7 intentional viewport skips.
+  This is desktop-engine and emulation evidence, not physical-device evidence.
 - Physical Android Chrome, iPhone/iOS Safari, representative-player trust, real input latency,
   thermal/battery, and sustained memory remain Gate-1 blockers.
