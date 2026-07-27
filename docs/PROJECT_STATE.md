@@ -11,8 +11,8 @@
 ## Last verified
 
 - Canonical v2.1 governing files are byte-preserved in the repository.
-- Strict TypeScript, Vite, direct Three.js, and exact
-  `@dimforge/rapier3d-compat@0.19.3` build from the lockfile.
+- Strict TypeScript, Vite, direct Three.js, and exact `@dimforge/rapier3d-compat@0.19.3` build from
+  the lockfile.
 - Tutorial content validates at hash `5aac8b9a`; adversarial lab at `1e4655f2`; material catalog at
   `05d66915`.
 - Rapier bootstrap self-test matches frozen hash `74e1d58f`.
@@ -24,10 +24,10 @@
 - Two identical golden runs match every 30-step and final replay hash; a one-command perturbation
   produces a detected divergence.
 - The adversarial fragile-threshold fixture classifies failure at step 46.
-- Fifty headless simulation create/play/dispose cycles retain exact `11/11/2`
-  body/collider/joint topology.
-- Headless Node profile over 4,000 fixed steps measured 0.2494 ms p95 and 9.4454 ms maximum. This
-  is not browser or device performance evidence.
+- Fifty headless simulation create/play/dispose cycles retain exact `11/11/2` body/collider/joint
+  topology.
+- Headless Node profile over 4,000 fixed steps measured 0.2494 ms p95 and 9.4454 ms maximum. This is
+  not browser or device performance evidence.
 - Production build excludes adversarial data and internal controls.
 
 ## Gate blockers
@@ -65,6 +65,6 @@ Gate 1 cannot pass without browser/device/player evidence and a resolved bundle 
 
 ## Next action
 
-Run a measured ADR spike comparing the accepted compatibility Rapier loader against a
-separate-WASM loading strategy without changing physics version, then run CI Chromium/WebKit/Firefox
-smoke, screenshots, WebGL lifecycle tests, and representative phone checks on the selected build.
+Run a measured ADR spike comparing the accepted compatibility Rapier loader against a separate-WASM
+loading strategy without changing physics version, then run CI Chromium/WebKit/Firefox smoke,
+screenshots, WebGL lifecycle tests, and representative phone checks on the selected build.

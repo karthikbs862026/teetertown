@@ -11,11 +11,7 @@ describe("tutorial robustness corridor", () => {
         const simulation = await TeetertownSimulation.create("tutorial-graybox");
         for (let step = 1; step <= 500 && simulation.snapshot().result === null; step += 1) {
           simulation.step(
-            createTiltCommand(
-              step,
-              step <= activationDelay ? 0 : -0.55 * magnitudeScale,
-              0
-            )
+            createTiltCommand(step, step <= activationDelay ? 0 : -0.55 * magnitudeScale, 0)
           );
         }
         attempts += 1;
