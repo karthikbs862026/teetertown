@@ -59,6 +59,12 @@ Acceptance required:
 - Headed Firefox under Xvfb/software WebGL passes renderer boot and context loss/restore. The
   browser matrix uses each engine's actual pointer ID; hardcoding pointer ID `1` was rejected as a
   non-portable test assumption.
+- Automated-closure Actions run
+  [`30260447230`](https://github.com/karthikbs862026/teetertown/actions/runs/30260447230) on
+  published head `12c53a8` passes static 15/31, Firefox 12/1, Chromium 23/3, WebKit 23/3, atomic PWA
+  1/1, and a non-retrying 30-second performance profile. That profile records 100 transitions,
+  −0.29% final/+0.75% maximum heap drift, exact resources, FMI 291.7 ms, steady-frame p95 33.3 ms,
+  and physics p95 0.5 ms.
 - Five screenshots were visually inspected. Current tutorial/goal/causal geometry is visible on
   desktop and narrow Pixel emulation; perspective, bounded-event, and adversarial compositions are
   reviewable.
@@ -86,12 +92,12 @@ Acceptance required:
    browser projects.
 6. **Firefox/WebKit CI execution:** closed for official Playwright engine builds. Firefox uses
    headed Xvfb/software WebGL because GitHub's headless Linux runner cannot create its context.
-7. **Dedicated contact/sleep/CCD/joint assertions:** closed locally in Node and actual Chromium;
-   current-head CI browser repetition pending.
+7. **Dedicated contact/sleep/CCD/joint assertions:** closed in Node, actual local Chromium, and all
+   official current-head browser projects.
 8. **Separate-WASM offline/update atomicity:** closed for automated Chromium fault scope under
    ADR-0013; physical storage pressure/eviction/update behavior remains open.
 9. **Browser profiling and bounded resource soak:** short and no-retry 20-minute local Chromium
-   profiles pass; current-head CI job remains pending.
+   profiles pass; the non-retrying current-head CI profile also passes.
 
 ## Remaining Gate-1 blockers
 
@@ -99,8 +105,6 @@ Acceptance required:
    memory, orientation, background/resume, or context evidence exists.
 2. No representative-player comprehension, correct-strategy repeatability, failure-attribution, or
    comfort evidence exists.
-3. The automated-closure head must pass its non-retrying GitHub PWA/performance job and repeat all
-   exact physics probes in the official browser matrix before automated CI scope closes.
 
 ## Decisions and confidence
 
@@ -116,12 +120,11 @@ Acceptance required:
 
 ## Recommendation
 
-**ITERATE.** Automated engineering closure is locally green, including the 20-minute browser soak,
-and awaits current-head Actions confirmation. Gate 1 cannot become **GO** without physical-device
-and representative-player evidence even after automation closes.
+**ITERATE.** Automated engineering closure is green locally and in official current-head Actions,
+including the 20-minute local browser soak. Gate 1 cannot become **GO** without physical-device and
+representative-player evidence.
 
 ## Next action
 
-Publish the closure commits to draft PR #1 and require every new Actions job to pass without retry.
-Then execute the prepared owner-run physical Android/iOS and representative-player protocols. Do not
-expand campaign content or meta systems yet.
+Execute the prepared owner-run physical Android/iOS and representative-player protocols while PR #1
+remains draft. Do not expand campaign content or meta systems yet.

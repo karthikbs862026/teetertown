@@ -30,13 +30,13 @@ GitHub Actions runs static/simulation/build/budget checks plus three engine-isol
 jobs: Chromium with Pixel 7 emulation, headed Firefox under Xvfb/software WebGL, and WebKit with
 iPhone 13 emulation. The workflow now also defines an `automated-closure` Chromium job for the PWA
 fault matrix and 30-second profile, plus a scheduled five-minute workload warm-up followed by a
-20-minute transition-stress profile with heap node diagnostics and retained reports. The first fully
-green engine-isolated draft-PR run
-[`30249144668`](https://github.com/karthikbs862026/teetertown/actions/runs/30249144668) passed:
-Firefox 11/1 intentional skip, Chromium 21/3, WebKit 21/3, and static/production.
+20-minute transition-stress profile with heap node diagnostics and retained reports. The current
+automated-closure draft-PR run
+[`30260447230`](https://github.com/karthikbs862026/teetertown/actions/runs/30260447230) passed:
+Firefox 12/1 intentional skip, Chromium 23/3, WebKit 23/3, static 15/31, atomic PWA 1/1, and the
+non-retrying 30-second profile.
 
 Local built-preview evidence uses actual npm-packaged Chromium plus Pixel 7 viewport/device
 emulation. The engine split keeps failures attributable and avoids one browser hiding another's
-result. The new workflow jobs require a successful PR run before their evidence closes at CI scope.
-Physical devices, staging hosting, full rollback deployment, and production remain unverified. No
-paid CI or deployment service was added.
+result. The current-head workflow is green at CI scope. Physical devices, staging hosting, full
+rollback deployment, and production remain unverified. No paid CI or deployment service was added.

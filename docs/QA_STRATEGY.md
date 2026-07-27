@@ -75,11 +75,13 @@ and an updated decision/ADR; tests are not weakened to make CI pass.
 
 - Node and local modular Chromium freeze canonical pileup contacts (`0fe7d31e`), changed-command
   sleep/wake (`b3c1c78a`), CCD control/treatment (`dd85d291`), and 480-step joint reversal
-  (`b033984b`). The PR browser matrix must repeat them before CI scope closes.
+  (`b033984b`). Current-head Firefox, Chromium/Pixel, and WebKit/iPhone-emulation projects repeat
+  the complete probe set.
 - Chromium PWA fault evidence passes: v1/v2 offline Rapier boot, HTTP and SHA-mismatched WASM
   candidate rejection, next-session activation, old-cache purge, mixed-manifest fail-closed, and
   recovery.
 - The short Chromium profile passes exact registries and post-stabilization heap/resource limits.
   Its software-rendered frame data is an automation-health signal, not mobile tier evidence.
-- PWA/performance suites do not retry in CI. The general browser config excludes the dedicated PWA
-  test so it cannot accidentally run against the wrong server.
+- PWA/performance suites do not retry in CI. Run `30260447230` passes both; its short profile
+  records −0.29% final/+0.75% maximum heap drift with exact resources. The general browser config
+  excludes the dedicated PWA test so it cannot accidentally run against the wrong server.

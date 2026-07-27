@@ -185,7 +185,24 @@ Pull requests now define:
 - 14-day closure report retention.
 
 The weekly schedule adds a 1,200-second transition stress with heap-node summaries and 30-day
-artifact retention. Current-head CI is not counted until the published draft-PR run completes.
+artifact retention.
+
+Draft-PR run [`30260447230`](https://github.com/karthikbs862026/teetertown/actions/runs/30260447230)
+passes on published head `12c53a8`:
+
+| Job / project                          | Result                                                           |
+| -------------------------------------- | ---------------------------------------------------------------- |
+| Static/simulation/production           | 15 files / 31 tests; production budgets and lab isolation pass   |
+| Chromium + Pixel emulation             | 23 passed / 3 intentional viewport skips                         |
+| Headed Firefox/Xvfb                    | 12 passed / 1 intentional viewport skip                          |
+| WebKit + iPhone emulation              | 23 passed / 3 intentional viewport skips                         |
+| Atomic PWA fault matrix                | 1 passed                                                         |
+| Non-retrying 30-second browser profile | 1 passed; 100 transitions after 80-cycle / 48.091-second warm-up |
+
+The CI profile reports FMI 291.7 ms, steady-frame p95 33.3 ms, physics p95 0.5 ms, 30 draw
+calls/1,800 triangles, exact resources, DOM `1/473/43` → `1/473/43`, −0.29% final heap drift, and
++0.75% maximum observed drift. The scheduled long job is correctly skipped for pull requests; the
+local 20-minute result above is the current long-run evidence.
 
 ## 7. Commands
 
@@ -220,7 +237,6 @@ env TEETERTOWN_CHROMIUM_EXECUTABLE_PATH=/tmp/chromium \
   pressure, thermal, battery, and 20–30-minute thermal soak.
 - At least 10 representative first-time players, ≥80% unaided control comprehension, repeatable
   correct-strategy execution, and credible failure attribution.
-- Current closure-head GitHub Actions must be fully green before CI scope closes.
 
 Stop on any replay/probe divergence, mixed release, non-neutral cancellation, resource growth,
 
@@ -229,7 +245,7 @@ Stop on any replay/probe divergence, mixed release, non-neutral cancellation, re
 
 ## 9. Gate recommendation
 
-**ITERATE.** The requested automated engineering work is locally green, including the no-retry
-20-minute transition soak. Gate 1 still requires current-head official CI, physical-device
-validation, and representative-player evidence. Keep PR #1 draft and do not merge or expand
-production scope.
+**ITERATE.** The requested automated engineering work is green locally and in official current-head
+CI, including the no-retry 20-minute local transition soak and non-retrying CI closure job. Gate 1
+still requires physical-device validation and representative-player evidence. Keep PR #1 draft and
+do not merge or expand production scope.

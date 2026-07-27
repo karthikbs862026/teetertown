@@ -31,7 +31,7 @@ npm run test:performance:browser
 Current Gate 1 recommendation is **ITERATE**: Node and GitHub Chromium/Firefox/WebKit deterministic
 evidence, the production bundle gate, automated physics-risk probes, verified offline release
 faults, and short plus 20-minute desktop profiling pass. Physical devices and representative players
-remain open; the current automated-closure head still requires its official PR run. Read
+remain open; official current-head CI passes the automated closure. Read
 [docs/PROJECT_STATE.md](docs/PROJECT_STATE.md), the
 [foundation report](docs/audits/PHASE_0_1_FOUNDATION_EVIDENCE_2026-07-26.md), and the
 [automated-closure report](docs/audits/GATE_1_AUTOMATED_ENGINEERING_CLOSURE_2026-07-27.md) before
