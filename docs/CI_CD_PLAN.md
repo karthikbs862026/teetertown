@@ -25,7 +25,7 @@ service worker.
 
 GitHub Actions runs static/simulation/build/budget checks plus three engine-isolated Playwright
 jobs: Chromium with Pixel 7 emulation, headed Firefox under Xvfb/software WebGL, and WebKit with
-iPhone 13 emulation. Final draft-PR run
+iPhone 13 emulation. The first fully green engine-isolated draft-PR run
 [`30249144668`](https://github.com/karthikbs862026/teetertown/actions/runs/30249144668) passed:
 Firefox 11/1 intentional skip, Chromium 21/3, WebKit 21/3, and static/production.
 

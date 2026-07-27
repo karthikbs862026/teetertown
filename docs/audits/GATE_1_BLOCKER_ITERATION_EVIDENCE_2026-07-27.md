@@ -41,7 +41,7 @@ binary is committed or shipped.
 
 GitHub Actions installs official Playwright browser binaries in engine-isolated pull-request jobs:
 Chromium plus Pixel 7 emulation, headed Firefox under Xvfb/software WebGL, and WebKit plus iPhone 13
-emulation. This path executed successfully on the final PR head.
+emulation. This path executed successfully on the first fully green engine-isolated PR code head.
 
 ## 4. Physics/replay identity
 
@@ -115,11 +115,16 @@ failure/fix chain instead of a threshold waiver:
    triggered with the next pointer event.
 3. Run `30248817568` isolated engines and ran Firefox headed under Xvfb/software WebGL. Chromium and
    WebKit passed; Firefox passed 10 cases and failed only because the test hardcoded pointer ID `1`.
-4. Final run [`30249144668`](https://github.com/karthikbs862026/teetertown/actions/runs/30249144668)
-   on commit `f98c286` used the pointer ID actually emitted by each browser and passed every
-   required job.
+4. The first fully green engine-isolated run
+   [`30249144668`](https://github.com/karthikbs862026/teetertown/actions/runs/30249144668) on commit
+   `f98c286` used the pointer ID actually emitted by each browser and passed every required job.
+5. Documentation-head run `30249676810` repeated the same executable tree but exposed that the
+   Firefox Xvfb real-gesture smoke could exceed its original 8-second wall-clock bound under runner
+   contention. Exact parity, context, lifecycle, Chromium, WebKit, static, and production checks
+   remained green. The smoke now first proves the input is active and allows 20 seconds; this is a
+   functional timeout, not a performance threshold or performance claim.
 
-Final browser counts:
+Fully green run counts:
 
 | CI project group                     | Result                         |
 | ------------------------------------ | ------------------------------ |
@@ -129,7 +134,7 @@ Final browser counts:
 | Total                                | 53 passed, 7 intentional skips |
 
 All seven skips are explicit desktop-versus-mobile visual-baseline scopes. There were no unexpected
-skips, retries, or failures on the final run. The exact parity, pointer cancellation, paused
+skips, retries, or failures on the fully green run. The exact parity, pointer cancellation, paused
 restart, context loss/restore, 20-transition resource, camera, and lab-isolation cases passed in
 every applicable engine project.
 
@@ -168,7 +173,7 @@ env TEETERTOWN_CHROMIUM_EXECUTABLE_PATH=/tmp/chromium \
 
 The final local post-format gate repeated successfully: 13 unit/simulation files with 21 tests,
 production budget/lab-leak checks, lab build, and the 21-pass/3-intentional-skip Chromium matrix.
-GitHub Actions final run `30249144668` separately passed static/production plus the
+GitHub Actions run `30249144668` separately passed static/production plus the
 53-pass/7-intentional-skip engine matrix.
 
 ## 8. Remaining blockers and stop conditions

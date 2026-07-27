@@ -33,10 +33,12 @@ test("a sustained left drag produces the constrained golden capture", async ({ p
   await page.mouse.move(centerX, centerY);
   await page.mouse.down();
   await page.mouse.move(centerX - Math.min(bounds.width, bounds.height) * 0.176, centerY);
-  await expect(page.locator(".status-pill")).toContainText("Captured", { timeout: 8_000 });
-  await expect(page.locator(".metrics")).toHaveAttribute("data-state-hash", /^[0-9a-f]{8}$/);
+  const metrics = page.locator(".metrics");
+  await expect(metrics).toHaveAttribute("data-input-active", "true");
+  await expect(page.locator(".status-pill")).toContainText("Captured", { timeout: 20_000 });
+  await expect(metrics).toHaveAttribute("data-state-hash", /^[0-9a-f]{8}$/);
   await page.mouse.up();
-  await expect(page.locator(".metrics")).toHaveAttribute("data-input-active", "false");
+  await expect(metrics).toHaveAttribute("data-input-active", "false");
 });
 
 test("browser modular WASM reproduces the headless command-from-step-one golden", async ({
