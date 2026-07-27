@@ -1,0 +1,389 @@
+{
+  "schemaVersion": 1,
+  "id": "tutorial-graybox",
+  "kind": "tutorial",
+  "contentVersion": "phase1-graybox.1",
+  "titleKey": "level.tutorial_graybox.title",
+  "worldUnits": "meters",
+  "bounds": {
+    "minimum": { "x": -6, "y": -3, "z": -4 },
+    "maximum": { "x": 6, "y": 6, "z": 4 }
+  },
+  "entities": [
+    {
+      "id": "anchor-left",
+      "role": "visible_hinge",
+      "authority": "constrained",
+      "body": {
+        "kind": "fixed",
+        "translation": { "x": -1.5, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0, "w": 1 },
+        "linearVelocity": { "x": 0, "y": 0, "z": 0 },
+        "angularVelocity": { "x": 0, "y": 0, "z": 0 },
+        "linearDamping": 0,
+        "angularDamping": 0,
+        "canSleep": true,
+        "ccd": false
+      },
+      "collider": {
+        "shape": "cylinder",
+        "radius": 0.14,
+        "halfHeight": 0.65,
+        "material": "wood",
+        "sensor": true
+      },
+      "visual": {
+        "shape": "cylinder",
+        "size": { "x": 0.28, "y": 1.3, "z": 0.28 },
+        "color": "#ffcf70",
+        "opacity": 1,
+        "wireframe": false
+      },
+      "intentionallyMismatched": false
+    },
+    {
+      "id": "anchor-right",
+      "role": "visible_hinge",
+      "authority": "constrained",
+      "body": {
+        "kind": "fixed",
+        "translation": { "x": 1.25, "y": 0, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0, "w": 1 },
+        "linearVelocity": { "x": 0, "y": 0, "z": 0 },
+        "angularVelocity": { "x": 0, "y": 0, "z": 0 },
+        "linearDamping": 0,
+        "angularDamping": 0,
+        "canSleep": true,
+        "ccd": false
+      },
+      "collider": {
+        "shape": "cylinder",
+        "radius": 0.14,
+        "halfHeight": 0.65,
+        "material": "wood",
+        "sensor": true
+      },
+      "visual": {
+        "shape": "cylinder",
+        "size": { "x": 0.28, "y": 1.3, "z": 0.28 },
+        "color": "#ffcf70",
+        "opacity": 1,
+        "wireframe": false
+      },
+      "intentionallyMismatched": false
+    },
+    {
+      "id": "apple",
+      "role": "required_goal_object",
+      "authority": "dynamic",
+      "body": {
+        "kind": "dynamic",
+        "translation": { "x": -2.2, "y": 1.12, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0, "w": 1 },
+        "linearVelocity": { "x": 0, "y": 0, "z": 0 },
+        "angularVelocity": { "x": 0, "y": 0, "z": 0 },
+        "linearDamping": 0.08,
+        "angularDamping": 0.1,
+        "canSleep": true,
+        "ccd": true
+      },
+      "collider": {
+        "shape": "ball",
+        "radius": 0.34,
+        "material": "apple",
+        "sensor": false
+      },
+      "visual": {
+        "shape": "sphere",
+        "size": { "x": 0.68, "y": 0.68, "z": 0.68 },
+        "color": "#f85b5b",
+        "opacity": 1,
+        "wireframe": false
+      },
+      "intentionallyMismatched": false
+    },
+    {
+      "id": "basket-base",
+      "role": "goal_capture_surface",
+      "authority": "assist",
+      "body": {
+        "kind": "fixed",
+        "translation": { "x": 4, "y": -0.05, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0, "w": 1 },
+        "linearVelocity": { "x": 0, "y": 0, "z": 0 },
+        "angularVelocity": { "x": 0, "y": 0, "z": 0 },
+        "linearDamping": 0,
+        "angularDamping": 0,
+        "canSleep": true,
+        "ccd": false
+      },
+      "collider": {
+        "shape": "cuboid",
+        "halfExtents": { "x": 0.9, "y": 0.12, "z": 0.8 },
+        "material": "goal",
+        "sensor": false
+      },
+      "visual": {
+        "shape": "box",
+        "size": { "x": 1.8, "y": 0.24, "z": 1.6 },
+        "color": "#7bd7a8",
+        "opacity": 1,
+        "wireframe": false
+      },
+      "intentionallyMismatched": false
+    },
+    {
+      "id": "basket-left",
+      "role": "visible_capture_constraint",
+      "authority": "assist",
+      "body": {
+        "kind": "fixed",
+        "translation": { "x": 3.15, "y": 0.45, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0, "w": 1 },
+        "linearVelocity": { "x": 0, "y": 0, "z": 0 },
+        "angularVelocity": { "x": 0, "y": 0, "z": 0 },
+        "linearDamping": 0,
+        "angularDamping": 0,
+        "canSleep": true,
+        "ccd": false
+      },
+      "collider": {
+        "shape": "cuboid",
+        "halfExtents": { "x": 0.12, "y": 0.55, "z": 0.8 },
+        "material": "goal",
+        "sensor": true
+      },
+      "visual": {
+        "shape": "box",
+        "size": { "x": 0.24, "y": 1.1, "z": 1.6 },
+        "color": "#7bd7a8",
+        "opacity": 0.78,
+        "wireframe": false
+      },
+      "intentionallyMismatched": false
+    },
+    {
+      "id": "basket-ramp",
+      "role": "visible_capture_entry",
+      "authority": "assist",
+      "body": {
+        "kind": "fixed",
+        "translation": { "x": 2.82, "y": 0.43, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": -0.247404, "w": 0.968912 },
+        "linearVelocity": { "x": 0, "y": 0, "z": 0 },
+        "angularVelocity": { "x": 0, "y": 0, "z": 0 },
+        "linearDamping": 0,
+        "angularDamping": 0,
+        "canSleep": true,
+        "ccd": false
+      },
+      "collider": {
+        "shape": "cuboid",
+        "halfExtents": { "x": 0.52, "y": 0.1, "z": 0.75 },
+        "material": "goal",
+        "sensor": false
+      },
+      "visual": {
+        "shape": "box",
+        "size": { "x": 1.04, "y": 0.2, "z": 1.5 },
+        "color": "#7bd7a8",
+        "opacity": 0.9,
+        "wireframe": false
+      },
+      "intentionallyMismatched": false
+    },
+    {
+      "id": "basket-right",
+      "role": "visible_capture_constraint",
+      "authority": "assist",
+      "body": {
+        "kind": "fixed",
+        "translation": { "x": 4.85, "y": 0.45, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0, "w": 1 },
+        "linearVelocity": { "x": 0, "y": 0, "z": 0 },
+        "angularVelocity": { "x": 0, "y": 0, "z": 0 },
+        "linearDamping": 0,
+        "angularDamping": 0,
+        "canSleep": true,
+        "ccd": false
+      },
+      "collider": {
+        "shape": "cuboid",
+        "halfExtents": { "x": 0.12, "y": 0.55, "z": 0.8 },
+        "material": "goal",
+        "sensor": false
+      },
+      "visual": {
+        "shape": "box",
+        "size": { "x": 0.24, "y": 1.1, "z": 1.6 },
+        "color": "#7bd7a8",
+        "opacity": 0.78,
+        "wireframe": false
+      },
+      "intentionallyMismatched": false
+    },
+    {
+      "id": "bottle",
+      "role": "fragile_object",
+      "authority": "dynamic",
+      "body": {
+        "kind": "dynamic",
+        "translation": { "x": 0, "y": -0.92, "z": 1.5 },
+        "rotation": { "x": 0, "y": 0, "z": 0, "w": 1 },
+        "linearVelocity": { "x": 0, "y": 0, "z": 0 },
+        "angularVelocity": { "x": 0, "y": 0, "z": 0 },
+        "linearDamping": 0.1,
+        "angularDamping": 0.16,
+        "canSleep": true,
+        "ccd": true
+      },
+      "collider": {
+        "shape": "cylinder",
+        "radius": 0.22,
+        "halfHeight": 0.48,
+        "material": "ceramic",
+        "sensor": false
+      },
+      "visual": {
+        "shape": "cylinder",
+        "size": { "x": 0.44, "y": 0.96, "z": 0.44 },
+        "color": "#9fd8ff",
+        "opacity": 0.9,
+        "wireframe": false
+      },
+      "intentionallyMismatched": false
+    },
+    {
+      "id": "floor",
+      "role": "failure_floor",
+      "authority": "constrained",
+      "body": {
+        "kind": "fixed",
+        "translation": { "x": 0, "y": -1.5, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0, "w": 1 },
+        "linearVelocity": { "x": 0, "y": 0, "z": 0 },
+        "angularVelocity": { "x": 0, "y": 0, "z": 0 },
+        "linearDamping": 0,
+        "angularDamping": 0,
+        "canSleep": true,
+        "ccd": false
+      },
+      "collider": {
+        "shape": "cuboid",
+        "halfExtents": { "x": 5.5, "y": 0.1, "z": 2.5 },
+        "material": "wood",
+        "sensor": false
+      },
+      "visual": {
+        "shape": "box",
+        "size": { "x": 11, "y": 0.2, "z": 5 },
+        "color": "#33435e",
+        "opacity": 0.45,
+        "wireframe": true
+      },
+      "intentionallyMismatched": false
+    },
+    {
+      "id": "platform-left",
+      "role": "hinged_platform",
+      "authority": "constrained",
+      "body": {
+        "kind": "dynamic",
+        "translation": { "x": -1.5, "y": 0.65, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0, "w": 1 },
+        "linearVelocity": { "x": 0, "y": 0, "z": 0 },
+        "angularVelocity": { "x": 0, "y": 0, "z": 0 },
+        "linearDamping": 0.12,
+        "angularDamping": 1.2,
+        "canSleep": true,
+        "ccd": false
+      },
+      "collider": {
+        "shape": "cuboid",
+        "halfExtents": { "x": 1.5, "y": 0.12, "z": 0.85 },
+        "material": "wood",
+        "sensor": false
+      },
+      "visual": {
+        "shape": "box",
+        "size": { "x": 3, "y": 0.24, "z": 1.7 },
+        "color": "#f2ae5d",
+        "opacity": 1,
+        "wireframe": false
+      },
+      "intentionallyMismatched": false
+    },
+    {
+      "id": "platform-right",
+      "role": "hinged_platform",
+      "authority": "constrained",
+      "body": {
+        "kind": "dynamic",
+        "translation": { "x": 1.25, "y": 0.65, "z": 0 },
+        "rotation": { "x": 0, "y": 0, "z": 0, "w": 1 },
+        "linearVelocity": { "x": 0, "y": 0, "z": 0 },
+        "angularVelocity": { "x": 0, "y": 0, "z": 0 },
+        "linearDamping": 0.12,
+        "angularDamping": 1.2,
+        "canSleep": true,
+        "ccd": false
+      },
+      "collider": {
+        "shape": "cuboid",
+        "halfExtents": { "x": 1.25, "y": 0.12, "z": 0.85 },
+        "material": "wood",
+        "sensor": false
+      },
+      "visual": {
+        "shape": "box",
+        "size": { "x": 2.5, "y": 0.24, "z": 1.7 },
+        "color": "#e8934d",
+        "opacity": 1,
+        "wireframe": false
+      },
+      "intentionallyMismatched": false
+    }
+  ],
+  "joints": [
+    {
+      "id": "hinge-left",
+      "kind": "revolute",
+      "bodyA": "anchor-left",
+      "bodyB": "platform-left",
+      "anchorA": { "x": 0, "y": 0.65, "z": 0 },
+      "anchorB": { "x": 0, "y": 0, "z": 0 },
+      "axis": { "x": 0, "y": 0, "z": 1 },
+      "limits": [-0.32, 0.32]
+    },
+    {
+      "id": "hinge-right",
+      "kind": "revolute",
+      "bodyA": "anchor-right",
+      "bodyB": "platform-right",
+      "anchorA": { "x": 0, "y": 0.65, "z": 0 },
+      "anchorB": { "x": 0, "y": 0, "z": 0 },
+      "axis": { "x": 0, "y": 0, "z": 1 },
+      "limits": [-0.32, 0.32]
+    }
+  ],
+  "goal": {
+    "requiredEntity": "apple",
+    "center": { "x": 4, "y": 0.52, "z": 0 },
+    "halfExtents": { "x": 0.78, "y": 0.58, "z": 0.7 },
+    "maximumSpeed": 0.42,
+    "holdSteps": 45
+  },
+  "fragility": {
+    "entity": "bottle",
+    "warningImpulse": 8,
+    "breakImpulse": 14,
+    "windowSteps": 12
+  },
+  "budget": {
+    "maximumBodies": 11,
+    "maximumColliders": 11,
+    "maximumJoints": 2,
+    "maximumAwakeBodies": 4
+  },
+  "contentHash": "5aac8b9a"
+}
