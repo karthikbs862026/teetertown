@@ -4,6 +4,8 @@ coverage/
 playwright-report/
 test-results/
 *.log
+*.tsbuildinfo
+.pwa-fixtures/
 .DS_Store
 .env
 .env.*

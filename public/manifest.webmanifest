@@ -1,0 +1,10 @@
+{
+  "name": "Teetertown Graybox Risk Lab",
+  "short_name": "Teetertown Lab",
+  "description": "Internal physics-trust graybox laboratory.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#171320",
+  "theme_color": "#251c35",
+  "orientation": "any"
+}

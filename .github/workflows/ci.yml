@@ -1,0 +1,118 @@
+name: Teetertown CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 3 * * 2"
+
+permissions:
+  contents: read
+
+jobs:
+  static-and-simulation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run check:fast
+      - run: npm run check:production
+
+  browser-matrix:
+    name: browser-matrix (${{ matrix.engine }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - engine: chromium
+            projects: --project=chromium --project=mobile-chromium
+            headed: false
+          - engine: firefox
+            projects: --project=firefox
+            headed: true
+          - engine: webkit
+            projects: --project=webkit --project=mobile-webkit
+            headed: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps ${{ matrix.engine }}
+      - run: npm run build:lab
+      - if: matrix.headed == false
+        run: npx playwright test ${{ matrix.projects }}
+        env:
+          TEETERTOWN_E2E_SERVER_COMMAND: npm run preview:e2e
+      - if: matrix.headed == true
+        run: xvfb-run --auto-servernum npx playwright test ${{ matrix.projects }}
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+          MOZ_WEBRENDER: "1"
+          TEETERTOWN_E2E_SERVER_COMMAND: npm run preview:e2e
+          TEETERTOWN_FIREFOX_HEADFUL: "1"
+
+  automated-closure:
+    name: automated-closure (chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e:pwa
+        env:
+          TEETERTOWN_PLAYWRIGHT_REPORT_DIR: playwright-report/pwa
+      - run: npm run test:performance:browser
+        env:
+          TEETERTOWN_PLAYWRIGHT_REPORT_DIR: playwright-report/performance
+          TEETERTOWN_SOAK_SECONDS: "30"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: automated-closure-${{ github.sha }}
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  scheduled-risk-suite:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:simulation
+      - run: npm run check:production
+      - run: npm run test:performance:browser
+        env:
+          TEETERTOWN_HEAP_DIAGNOSTICS: "1"
+          TEETERTOWN_PLAYWRIGHT_REPORT_DIR: playwright-report/performance-long
+          TEETERTOWN_SOAK_SECONDS: "1200"
+          TEETERTOWN_WARMUP_SECONDS: "300"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scheduled-risk-evidence-${{ github.sha }}
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 30
