@@ -10,8 +10,9 @@ import {
   TeetertownSimulation
 } from "../simulation/teetertownSimulation";
 import type { RuntimeExperimentOptions, SceneId, SimulationSnapshot } from "../simulation/types";
-import { LAB_ENABLED, RAPIER_RUNTIME_VARIANT } from "../simulation/version";
+import { LAB_ENABLED, RAPIER_RUNTIME_VARIANT, RELEASE_ID } from "../simulation/version";
 import { animationFrameDeltaSeconds } from "./frameTiming";
+import { RuntimePerformanceSampler, type RuntimePerformanceSummary } from "./runtimePerformance";
 
 interface UiElements {
   readonly stage: HTMLElement;
@@ -27,6 +28,7 @@ export class TeetertownApp {
   readonly #ui: UiElements;
   readonly #diagnostics = new DiagnosticRingBuffer();
   readonly #clock = new FixedStepClock();
+  readonly #performance = new RuntimePerformanceSampler();
   #options: RuntimeExperimentOptions = DEFAULT_EXPERIMENT_OPTIONS;
   #sceneId: SceneId = "tutorial-graybox";
   #renderer: GameRenderer | null = null;
@@ -42,6 +44,8 @@ export class TeetertownApp {
   #debugVisible = LAB_ENABLED;
   #disposeLabControls: (() => void) | null = null;
   readonly #inputLatencySamples: number[] = [];
+  #renderedFrames = 0;
+  #performanceSummary: RuntimePerformanceSummary = this.#performance.summary();
   #disposed = false;
 
   public constructor(root: HTMLElement) {
@@ -53,6 +57,7 @@ export class TeetertownApp {
     const bootstrapHash = await assertRapierBootstrap();
     this.#ui.stage.dataset.rapierBootstrapHash = bootstrapHash;
     this.#ui.stage.dataset.rapierRuntimeVariant = RAPIER_RUNTIME_VARIANT;
+    this.#ui.stage.dataset.releaseId = RELEASE_ID;
     this.#diagnostics.record({
       category: "boot",
       code: "rapier_self_test_pass",
@@ -80,6 +85,7 @@ export class TeetertownApp {
     this.#disposeLabControls?.();
     this.#simulation?.dispose();
     this.#renderer?.dispose();
+    this.#performance.dispose();
     this.#disposed = true;
   }
 
@@ -115,6 +121,7 @@ export class TeetertownApp {
       return;
     }
     const deltaSeconds = animationFrameDeltaSeconds(this.#lastFrameTime, timestamp);
+    this.#performance.recordFrame(deltaSeconds * 1_000);
     this.#lastFrameTime = Number.isFinite(timestamp) ? timestamp : null;
     const advance = this.#clock.advance(deltaSeconds, () => {
       if (this.#simulation === null) {
@@ -136,9 +143,11 @@ export class TeetertownApp {
         }
       }
       this.#previous = this.#current ?? this.#simulation.snapshot();
+      const physicsStart = performance.now();
       this.#current = this.#simulation.step(
         createTiltCommand(this.#simulation.snapshot().step + 1, sample.x, sample.z)
       );
+      this.#performance.recordPhysicsStep(performance.now() - physicsStart);
       if (this.#current.result !== null) {
         this.#setStatus(
           this.#current.result.kind === "success"
@@ -159,6 +168,11 @@ export class TeetertownApp {
     }
     if (this.#renderer !== null && this.#previous !== null && this.#current !== null) {
       this.#renderer.render(this.#previous, this.#current, advance.alpha);
+      this.#performance.markFirstMeaningfulInteraction(performance.now());
+      this.#renderedFrames += 1;
+      if (this.#renderedFrames % 30 === 0) {
+        this.#performanceSummary = this.#performance.summary();
+      }
     }
     this.#updateMetrics();
     this.#animationFrame = requestAnimationFrame(this.#frame);
@@ -324,6 +338,25 @@ export class TeetertownApp {
     this.#ui.metrics.dataset.joints = String(counts.joints);
     this.#ui.metrics.dataset.geometries = String(counts.geometries);
     this.#ui.metrics.dataset.materials = String(counts.materials);
+    this.#ui.metrics.dataset.textures = String(counts.textures);
+    this.#ui.metrics.dataset.renderTargets = String(counts.renderTargets);
+    this.#ui.metrics.dataset.listeners = String(counts.listeners);
+    this.#ui.metrics.dataset.timers = String(counts.timers);
+    this.#ui.metrics.dataset.workers = String(counts.workers);
+    this.#ui.metrics.dataset.audioNodes = String(counts.audioNodes);
+    this.#ui.metrics.dataset.drawCalls = String(counts.drawCalls);
+    this.#ui.metrics.dataset.triangles = String(counts.triangles);
+    this.#ui.metrics.dataset.frameSamples = String(this.#performanceSummary.frame.count);
+    this.#ui.metrics.dataset.frameP50Ms = this.#performanceSummary.frame.p50.toFixed(3);
+    this.#ui.metrics.dataset.frameP95Ms = this.#performanceSummary.frame.p95.toFixed(3);
+    this.#ui.metrics.dataset.frameP99Ms = this.#performanceSummary.frame.p99.toFixed(3);
+    this.#ui.metrics.dataset.frameMaximumMs = this.#performanceSummary.frame.maximum.toFixed(3);
+    this.#ui.metrics.dataset.physicsP95Ms = this.#performanceSummary.physics.p95.toFixed(3);
+    this.#ui.metrics.dataset.longTaskCount = String(this.#performanceSummary.longTaskCount);
+    this.#ui.metrics.dataset.longTaskMilliseconds =
+      this.#performanceSummary.longTaskMilliseconds.toFixed(3);
+    this.#ui.metrics.dataset.firstMeaningfulInteractionMs =
+      this.#performanceSummary.firstMeaningfulInteractionMilliseconds?.toFixed(3) ?? "";
     const sortedLatency = [...this.#inputLatencySamples].sort((left, right) => left - right);
     const latencyIndex = Math.max(0, Math.ceil(sortedLatency.length * 0.95) - 1);
     const latencyP95 =
@@ -333,6 +366,9 @@ export class TeetertownApp {
       <span><b>${counts.awakeBodies}/${counts.bodies}</b> awake / bodies</span>
       <span><b>${counts.joints}</b> joints</span>
       <span><b>${counts.geometries}/${counts.materials}</b> geo / mat</span>
+      <span><b>${counts.drawCalls}/${counts.triangles}</b> calls / tris</span>
+      <span><b>${this.#performanceSummary.frame.p95.toFixed(1)} ms</b> frame p95</span>
+      <span><b>${this.#performanceSummary.physics.p95.toFixed(2)} ms</b> physics p95</span>
       <span><b>${latencyP95}</b> input sample age p95</span>
       <span><b>${this.#current.debugContacts.length}</b> contact normals</span>
       <span><b>${hash}</b> state marker</span>
