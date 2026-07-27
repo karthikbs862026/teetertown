@@ -158,28 +158,58 @@ test("pointer cancellation and lost capture neutralize the active command", asyn
   const centerY = bounds.y + bounds.height * 0.5;
 
   await page.mouse.move(centerX, centerY);
+  await canvas.evaluate((element) => {
+    delete element.dataset.testPointerId;
+    element.addEventListener(
+      "pointerdown",
+      (event) => {
+        if (!(event instanceof PointerEvent)) {
+          throw new Error("Expected pointerdown to deliver a PointerEvent.");
+        }
+        element.dataset.testPointerId = String(event.pointerId);
+      },
+      { once: true }
+    );
+  });
   await page.mouse.down();
   await page.mouse.move(centerX - 24, centerY);
   await expect(metrics).toHaveAttribute("data-input-active", "true");
-  await canvas.evaluate((element) => {
+  const cancelPointerId = Number(await canvas.getAttribute("data-test-pointer-id"));
+  expect(Number.isInteger(cancelPointerId)).toBe(true);
+  await canvas.evaluate((element, pointerId) => {
     element.dispatchEvent(
-      new PointerEvent("pointercancel", { bubbles: true, pointerId: 1, pointerType: "mouse" })
+      new PointerEvent("pointercancel", { bubbles: true, pointerId, pointerType: "mouse" })
     );
-  });
+  }, cancelPointerId);
   await expect(metrics).toHaveAttribute("data-input-active", "false");
   await page.mouse.up();
 
   await page.mouse.move(centerX, centerY);
+  await canvas.evaluate((element) => {
+    delete element.dataset.testPointerId;
+    element.addEventListener(
+      "pointerdown",
+      (event) => {
+        if (!(event instanceof PointerEvent)) {
+          throw new Error("Expected pointerdown to deliver a PointerEvent.");
+        }
+        element.dataset.testPointerId = String(event.pointerId);
+      },
+      { once: true }
+    );
+  });
   await page.mouse.down();
   await page.mouse.move(centerX - 24, centerY);
   await expect(metrics).toHaveAttribute("data-input-active", "true");
-  const released = await canvas.evaluate((element) => {
-    if (!element.hasPointerCapture(1)) {
+  const capturePointerId = Number(await canvas.getAttribute("data-test-pointer-id"));
+  expect(Number.isInteger(capturePointerId)).toBe(true);
+  const released = await canvas.evaluate((element, pointerId) => {
+    if (!element.hasPointerCapture(pointerId)) {
       return false;
     }
-    element.releasePointerCapture(1);
+    element.releasePointerCapture(pointerId);
     return true;
-  });
+  }, capturePointerId);
   expect(released).toBe(true);
   await page.mouse.move(centerX - 23, centerY);
   await expect(metrics).toHaveAttribute("data-input-active", "false");
