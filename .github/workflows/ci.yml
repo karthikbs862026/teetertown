@@ -24,7 +24,7 @@ jobs:
       - run: npm run check:fast
       - run: npm run check:production
 
-  browser-smoke:
+  browser-matrix:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -34,8 +34,11 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e:chromium
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run build:lab
+      - run: npm run test:e2e:ci
+        env:
+          TEETERTOWN_E2E_SERVER_COMMAND: npm run preview:e2e
 
   scheduled-risk-suite:
     if: github.event_name == 'schedule'

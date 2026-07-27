@@ -33,6 +33,7 @@ import type {
   VisualDefinition
 } from "../simulation/content";
 import type { CameraModel, ResourceCounts, SimulationSnapshot } from "../simulation/types";
+import { orthographicFrustumForAspect } from "./cameraFrustum";
 import { LevelResourceScope } from "./levelResourceScope";
 
 const CAMERA_HEIGHT = 5.4;
@@ -139,6 +140,7 @@ export class GameRenderer {
     this.#colliderOverlays.length = 0;
     this.#contactLines = null;
     this.#camera = this.#createCamera(cameraModel);
+    this.canvas.dataset.cameraModel = cameraModel;
 
     for (const entity of level.entities) {
       this.#createEntity(entity);
@@ -152,6 +154,7 @@ export class GameRenderer {
 
   public setCameraModel(model: CameraModel): void {
     this.#camera = this.#createCamera(model);
+    this.canvas.dataset.cameraModel = model;
     this.resize();
   }
 
@@ -202,15 +205,23 @@ export class GameRenderer {
     this.#renderer.setSize(width, height, false);
     const aspect = width / height;
     if (this.#camera instanceof OrthographicCamera) {
-      const vertical = 5.3;
-      this.#camera.left = -vertical * aspect;
-      this.#camera.right = vertical * aspect;
-      this.#camera.top = vertical;
-      this.#camera.bottom = -vertical;
+      const frustum = orthographicFrustumForAspect(aspect);
+      this.#camera.left = frustum.left;
+      this.#camera.right = frustum.right;
+      this.#camera.top = frustum.top;
+      this.#camera.bottom = frustum.bottom;
       this.#camera.updateProjectionMatrix();
+      this.canvas.dataset.cameraLeft = String(frustum.left);
+      this.canvas.dataset.cameraRight = String(frustum.right);
+      this.canvas.dataset.cameraTop = String(frustum.top);
+      this.canvas.dataset.cameraBottom = String(frustum.bottom);
     } else if (this.#camera instanceof PerspectiveCamera) {
       this.#camera.aspect = aspect;
       this.#camera.updateProjectionMatrix();
+      delete this.canvas.dataset.cameraLeft;
+      delete this.canvas.dataset.cameraRight;
+      delete this.canvas.dataset.cameraTop;
+      delete this.canvas.dataset.cameraBottom;
     }
   }
 

@@ -18,7 +18,8 @@ const forbiddenMarkers = [
   "Collider mismatch is magenta",
   "Two-axis track",
   "data-lab",
-  "Export diagnostics"
+  "Export diagnostics",
+  "__TEETERTOWN_LAB_API__"
 ];
 const violations: string[] = [];
 for (const file of await filesBelow("dist")) {

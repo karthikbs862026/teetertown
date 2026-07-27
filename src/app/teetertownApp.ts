@@ -4,12 +4,14 @@ import { GameRenderer } from "../rendering/gameRenderer";
 import { FixedStepClock } from "../simulation/fixedStepClock";
 import { createTiltCommand } from "../simulation/inputCommand";
 import { assertRapierBootstrap } from "../simulation/rapierBootstrap";
+import { hashSimulationSnapshot } from "../simulation/stableHash";
 import {
   DEFAULT_EXPERIMENT_OPTIONS,
   TeetertownSimulation
 } from "../simulation/teetertownSimulation";
 import type { RuntimeExperimentOptions, SceneId, SimulationSnapshot } from "../simulation/types";
-import { LAB_ENABLED } from "../simulation/version";
+import { LAB_ENABLED, RAPIER_RUNTIME_VARIANT } from "../simulation/version";
+import { animationFrameDeltaSeconds } from "./frameTiming";
 
 interface UiElements {
   readonly stage: HTMLElement;
@@ -33,7 +35,9 @@ export class TeetertownApp {
   #previous: SimulationSnapshot | null = null;
   #current: SimulationSnapshot | null = null;
   #animationFrame = 0;
-  #lastFrameTime = performance.now();
+  #lastFrameTime: number | null = null;
+  #lastInputActive = false;
+  #lastInputSequence = 0;
   #paused = false;
   #debugVisible = LAB_ENABLED;
   #disposeLabControls: (() => void) | null = null;
@@ -47,6 +51,8 @@ export class TeetertownApp {
   public async start(): Promise<void> {
     this.#setStatus("Booting deterministic physics…", "loading");
     const bootstrapHash = await assertRapierBootstrap();
+    this.#ui.stage.dataset.rapierBootstrapHash = bootstrapHash;
+    this.#ui.stage.dataset.rapierRuntimeVariant = RAPIER_RUNTIME_VARIANT;
     this.#diagnostics.record({
       category: "boot",
       code: "rapier_self_test_pass",
@@ -59,7 +65,7 @@ export class TeetertownApp {
     this.#input = new PointerInputOwner(this.#renderer.canvas, this.#options.inputModel);
     this.#wireLifecycle();
     await this.#loadScene();
-    this.#lastFrameTime = performance.now();
+    this.#lastFrameTime = null;
     this.#animationFrame = requestAnimationFrame(this.#frame);
   }
 
@@ -88,7 +94,11 @@ export class TeetertownApp {
     this.#previous = this.#simulation.snapshot();
     this.#current = this.#previous;
     this.#clock.reset();
+    this.#clock.resume();
+    this.#lastFrameTime = null;
     this.#inputLatencySamples.length = 0;
+    this.#lastInputActive = false;
+    this.#lastInputSequence = 0;
     this.#paused = false;
     this.#ui.pause.textContent = "Pause";
     this.#setStatus(
@@ -104,8 +114,8 @@ export class TeetertownApp {
     if (this.#disposed) {
       return;
     }
-    const deltaSeconds = (timestamp - this.#lastFrameTime) / 1000;
-    this.#lastFrameTime = timestamp;
+    const deltaSeconds = animationFrameDeltaSeconds(this.#lastFrameTime, timestamp);
+    this.#lastFrameTime = Number.isFinite(timestamp) ? timestamp : null;
     const advance = this.#clock.advance(deltaSeconds, () => {
       if (this.#simulation === null) {
         return;
@@ -117,6 +127,8 @@ export class TeetertownApp {
         sequence: 0,
         ageMilliseconds: 0
       };
+      this.#lastInputActive = sample.active;
+      this.#lastInputSequence = sample.sequence;
       if (sample.active) {
         this.#inputLatencySamples.push(sample.ageMilliseconds);
         if (this.#inputLatencySamples.length > 256) {
@@ -215,8 +227,11 @@ export class TeetertownApp {
       debug.setAttribute("aria-pressed", String(this.#debugVisible));
     });
     if (__TEETERTOWN_LAB_ENABLED__) {
-      void import("../devtools/labControls").then(({ mountLabControls }) => {
-        this.#disposeLabControls = mountLabControls(
+      void Promise.all([
+        import("../devtools/labControls"),
+        import("../devtools/browserParity")
+      ]).then(([{ mountLabControls }, { mountBrowserParityApi }]) => {
+        const disposeControls = mountLabControls(
           labPanel,
           { sceneId: this.#sceneId, options: this.#options },
           (selection) => {
@@ -228,6 +243,16 @@ export class TeetertownApp {
             this.#exportDiagnostics();
           }
         );
+        const disposeParityApi = mountBrowserParityApi();
+        const disposeLabFeatures = (): void => {
+          disposeControls();
+          disposeParityApi();
+        };
+        if (this.#disposed) {
+          disposeLabFeatures();
+        } else {
+          this.#disposeLabControls = disposeLabFeatures;
+        }
       });
     } else {
       labPanel.hidden = true;
@@ -289,6 +314,16 @@ export class TeetertownApp {
     }
     const counts = this.#renderer.resourceCounts(this.#simulation.resourceCounts());
     const hash = `${this.#current.step}:${this.#current.phase}`;
+    const stateHash = hashSimulationSnapshot(this.#current);
+    this.#ui.metrics.dataset.fixedStep = String(this.#current.step);
+    this.#ui.metrics.dataset.stateHash = stateHash;
+    this.#ui.metrics.dataset.inputActive = String(this.#lastInputActive);
+    this.#ui.metrics.dataset.inputSequence = String(this.#lastInputSequence);
+    this.#ui.metrics.dataset.bodies = String(counts.bodies);
+    this.#ui.metrics.dataset.colliders = String(counts.colliders);
+    this.#ui.metrics.dataset.joints = String(counts.joints);
+    this.#ui.metrics.dataset.geometries = String(counts.geometries);
+    this.#ui.metrics.dataset.materials = String(counts.materials);
     const sortedLatency = [...this.#inputLatencySamples].sort((left, right) => left - right);
     const latencyIndex = Math.max(0, Math.ceil(sortedLatency.length * 0.95) - 1);
     const latencyP95 =

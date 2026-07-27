@@ -1,5 +1,6 @@
 import "./styles.css";
 import { TeetertownApp } from "./app/teetertownApp";
+import { LAB_ENABLED } from "./simulation/version";
 
 const root = document.querySelector<HTMLElement>("#app");
 if (root === null) {
@@ -24,7 +25,7 @@ if (import.meta.hot !== undefined) {
   });
 }
 
-if (import.meta.env.PROD && "serviceWorker" in navigator) {
+if (import.meta.env.PROD && !LAB_ENABLED && "serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     void navigator.serviceWorker.register("/sw.js");
   });

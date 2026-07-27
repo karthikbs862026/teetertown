@@ -1,5 +1,25 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const chromiumExecutablePath = process.env.TEETERTOWN_CHROMIUM_EXECUTABLE_PATH;
+const fallbackChromium =
+  chromiumExecutablePath === undefined
+    ? {}
+    : {
+        launchOptions: {
+          executablePath: chromiumExecutablePath,
+          args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--ignore-gpu-blocklist",
+            "--in-process-gpu",
+            "--use-gl=angle",
+            "--use-angle=swiftshader",
+            "--enable-unsafe-swiftshader"
+          ]
+        }
+      };
+
 export default defineConfig({
   testDir: ".",
   testMatch: ["tests/e2e/**/*.spec.ts", "tests/visual/**/*.spec.ts"],
@@ -15,7 +35,7 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] }
+      use: { ...devices["Desktop Chrome"], ...fallbackChromium }
     },
     {
       name: "firefox",
@@ -27,7 +47,7 @@ export default defineConfig({
     },
     {
       name: "mobile-chromium",
-      use: { ...devices["Pixel 7"] }
+      use: { ...devices["Pixel 7"], ...fallbackChromium }
     },
     {
       name: "mobile-webkit",
@@ -35,7 +55,7 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: "npm run dev",
+    command: process.env.TEETERTOWN_E2E_SERVER_COMMAND ?? "npm run dev:e2e",
     url: "http://127.0.0.1:4173",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000
