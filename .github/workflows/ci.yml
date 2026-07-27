@@ -62,9 +62,10 @@ jobs:
           TEETERTOWN_E2E_SERVER_COMMAND: npm run preview:e2e
           TEETERTOWN_FIREFOX_HEADFUL: "1"
 
-  scheduled-risk-suite:
-    if: github.event_name == 'schedule'
+  automated-closure:
+    name: automated-closure (chromium)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -72,5 +73,46 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e:pwa
+        env:
+          TEETERTOWN_PLAYWRIGHT_REPORT_DIR: playwright-report/pwa
+      - run: npm run test:performance:browser
+        env:
+          TEETERTOWN_PLAYWRIGHT_REPORT_DIR: playwright-report/performance
+          TEETERTOWN_SOAK_SECONDS: "30"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: automated-closure-${{ github.sha }}
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  scheduled-risk-suite:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
       - run: npm run test:simulation
-      - run: npm run check:budgets
+      - run: npm run check:production
+      - run: npm run test:performance:browser
+        env:
+          TEETERTOWN_HEAP_DIAGNOSTICS: "1"
+          TEETERTOWN_PLAYWRIGHT_REPORT_DIR: playwright-report/performance-long
+          TEETERTOWN_SOAK_SECONDS: "1200"
+          TEETERTOWN_WARMUP_SECONDS: "300"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scheduled-risk-evidence-${{ github.sha }}
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 30

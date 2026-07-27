@@ -4,7 +4,8 @@
 
 1. Feature branch: local fast checks and optional lab artifact.
 2. Pull request: install integrity, static checks, unit/simulation/replay, budgets, content/assets,
-   and Chromium/Firefox/WebKit plus Chromium/WebKit phone-emulation browser checks.
+   Chromium/Firefox/WebKit plus Chromium/WebKit phone-emulation browser checks, verified offline
+   release faults, and a non-retrying Chromium performance/resource profile.
 3. Merge to `main`: immutable staging-shaped artifact tagged with code/content/physics/replay
    versions.
 4. Staging: smoke, replay, save migration, offline, lifecycle, diagnostic export, and rollback
@@ -16,21 +17,26 @@ No production deployment is authorized in Phase 0/1.
 
 ## Compatibility and rollback
 
-A release identity binds code commit, service-worker version, content manifest, physics version,
-replay schema, save schema, and remote configuration. An active session may not mix versions.
-Rollback restores the compatible set together; it does not point old code at a new content pack or
-service worker.
+A release identity binds the compiled client, SHA-256 asset set, service worker, content manifest,
+Rapier WASM, physics version, replay schema, save schema, and remote configuration. A candidate
+worker verifies the entire set before waiting; any HTTP/digest failure deletes the candidate cache.
+Activation occurs at a session boundary. The app checks compiled-versus-manifest identity before
+world construction. Rollback restores the compatible set together; it does not point old code at a
+new content pack or service worker.
 
 ## Current skeleton limits
 
 GitHub Actions runs static/simulation/build/budget checks plus three engine-isolated Playwright
 jobs: Chromium with Pixel 7 emulation, headed Firefox under Xvfb/software WebGL, and WebKit with
-iPhone 13 emulation. The first fully green engine-isolated draft-PR run
+iPhone 13 emulation. The workflow now also defines an `automated-closure` Chromium job for the PWA
+fault matrix and 30-second profile, plus a scheduled five-minute workload warm-up followed by a
+20-minute transition-stress profile with heap node diagnostics and retained reports. The first fully
+green engine-isolated draft-PR run
 [`30249144668`](https://github.com/karthikbs862026/teetertown/actions/runs/30249144668) passed:
 Firefox 11/1 intentional skip, Chromium 21/3, WebKit 21/3, and static/production.
 
 Local built-preview evidence uses actual npm-packaged Chromium plus Pixel 7 viewport/device
 emulation. The engine split keeps failures attributable and avoids one browser hiding another's
-result. Scheduled fuzz/soak, physical devices, staging hosting, artifact retention, offline
-WASM/service-worker faults, and rollback execution remain unverified. No paid CI or deployment
-service was added.
+result. The new workflow jobs require a successful PR run before their evidence closes at CI scope.
+Physical devices, staging hosting, full rollback deployment, and production remain unverified. No
+paid CI or deployment service was added.

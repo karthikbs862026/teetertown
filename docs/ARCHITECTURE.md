@@ -41,17 +41,28 @@ and topology changes enter through explicit fixed-step simulation commands.
 ## Boot sequence
 
 1. `boot`
-2. `capability_check`
-3. async Rapier singleton initialization
-4. deterministic tiny-world self-test
-5. content/material validation
-6. minimum view creation
-7. simulation-world construction in stable ID order
-8. renderer/view binding
-9. `ready`, then `playing`
+2. register/update the production service worker and activate a fully verified waiting release only
+   at the session boundary;
+3. validate compiled release ID against the active manifest;
+4. `capability_check`;
+5. async Rapier singleton initialization;
+6. deterministic tiny-world self-test;
+7. content/material validation;
+8. minimum view creation;
+9. simulation-world construction in stable ID order;
+10. renderer/view binding;
+11. `ready`, then `playing`.
 
 Input is disabled until ready. A failed self-test transitions to `fatal_error`; it never creates a
 fallback world.
+
+## Release identity and offline lifecycle
+
+The production build emits a schema-2 manifest and service worker after all Vite assets exist. One
+release ID binds SHA-256 hashes for the client, Rapier WASM, HTML, styles, and shell assets. The
+candidate worker verifies every response before committing the candidate cache and waits until the
+next boot to activate. Any missing/corrupt response deletes the candidate. The active worker serves
+one release-namespaced cache and removes the prior cache only after activation. See ADR-0013.
 
 ## Rapier runtime packaging
 
@@ -77,15 +88,21 @@ transition table. UI callbacks request transitions or enqueue commands; they do 
 - One quantized target-tilt command is applied per fixed step.
 - Rapier steps once; ordered rule processing follows; assertions run; previous/current snapshots
   rotate; replay command/hash recording completes.
+- Contact events are canonicalized before rules consume them. A changed quantized command wakes
+  sleeping dynamic bodies in stable entity order; an unchanged command preserves sleeping.
 - Rendering interpolates with accumulator alpha and never feeds that pose into simulation.
 
 ## Level lifecycle
 
-Each load creates one `LevelResourceScope` owning Three geometries/materials/textures/render
-targets, Rapier world resources, listeners, timers, subscriptions, workers, and audio handles.
-Unload pauses simulation, releases pointer capture, disposes in reverse order, frees the Rapier
-world, detaches the scene, and emits before/after counters. A resource-count increase after warm-up
-blocks the lifecycle gate.
+Each load creates one `LevelResourceScope` for Three geometries/materials/textures/render targets
+and one simulation owning its Rapier world/event queue. Unload pauses simulation, releases pointer
+capture, disposes the prior render scope, frees the prior Rapier resources, and emits current
+counters. Future listeners, timers, subscriptions, workers, and audio handles join explicit scopes
+before use. A resource-count increase after warm-up blocks the lifecycle gate.
+
+Frame and physics timings use fixed-capacity 2,048-sample typed rings. The lab exposes percentile,
+long-task, draw/triangle, and explicit resource counters; profiling computes heap/DOM trends outside
+the app through Chrome DevTools Protocol so memory diagnostics do not influence simulation.
 
 ## Build separation
 

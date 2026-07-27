@@ -21,10 +21,11 @@
 ## Fast path and gates
 
 - Local: typecheck, lint/format, schema/boundary/cycle checks, unit/simulation suite.
-- PR: full replay suite, Chromium smoke, targeted WebKit/Firefox, budgets, visual baselines, preview
-  artifact.
+- PR: full replay suite, Chromium smoke, targeted WebKit/Firefox, budgets, visual baselines,
+  verified PWA faults, a 30-second browser profile, and retained evidence artifact.
 - Main/staging: browser matrix, offline/save migration, immutable version identity, rollback smoke.
-- Scheduled: fuzz, 50-cycle lifecycle, soak, cross-browser trend.
+- Scheduled: fuzz, 50-cycle lifecycle, 20-minute desktop transition soak with heap diagnostics,
+  cross-browser trend.
 - Phase gate: physical Android + iOS Safari, thermal/battery observation, lifecycle/context/storage
   fault tests, art–physics, accessibility, privacy, monetization-firewall, and trust audits.
 
@@ -68,4 +69,17 @@ and an updated decision/ADR; tests are not weakened to make CI pass.
   Firefox/Xvfb/software-WebGL, and WebKit/iPhone projects: 53 passed, 7 intentional viewport skips.
   This is desktop-engine and emulation evidence, not physical-device evidence.
 - Physical Android Chrome, iPhone/iOS Safari, representative-player trust, real input latency,
-  thermal/battery, and sustained memory remain Gate-1 blockers.
+  thermal/battery, and sustained device memory remain Gate-1 blockers.
+
+## Automated engineering closure status — 2026-07-27
+
+- Node and local modular Chromium freeze canonical pileup contacts (`0fe7d31e`), changed-command
+  sleep/wake (`b3c1c78a`), CCD control/treatment (`dd85d291`), and 480-step joint reversal
+  (`b033984b`). The PR browser matrix must repeat them before CI scope closes.
+- Chromium PWA fault evidence passes: v1/v2 offline Rapier boot, HTTP and SHA-mismatched WASM
+  candidate rejection, next-session activation, old-cache purge, mixed-manifest fail-closed, and
+  recovery.
+- The short Chromium profile passes exact registries and post-stabilization heap/resource limits.
+  Its software-rendered frame data is an automation-health signal, not mobile tier evidence.
+- PWA/performance suites do not retry in CI. The general browser config excludes the dedicated PWA
+  test so it cannot accidentally run against the wrong server.

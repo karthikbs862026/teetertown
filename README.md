@@ -21,15 +21,18 @@ npm run check:fast
 npm run dev
 npm run build:lab
 npm run test:e2e
+npm run test:e2e:pwa
+npm run test:performance:browser
 ```
 
 `npm run build` creates the public production-shaped artifact and excludes the internal lab UI.
 `npm run build:lab` includes the graybox experiment controls for review.
 
 Current Gate 1 recommendation is **ITERATE**: Node and GitHub Chromium/Firefox/WebKit deterministic
-evidence and the production bundle gate pass, while physical devices, representative players,
-offline WASM updates, and browser profiling remain open. Read
+evidence, the production bundle gate, automated physics-risk probes, verified offline release
+faults, and short plus 20-minute desktop profiling pass. Physical devices and representative players
+remain open; the current automated-closure head still requires its official PR run. Read
 [docs/PROJECT_STATE.md](docs/PROJECT_STATE.md), the
 [foundation report](docs/audits/PHASE_0_1_FOUNDATION_EVIDENCE_2026-07-26.md), and the
-[blocker-iteration report](docs/audits/GATE_1_BLOCKER_ITERATION_EVIDENCE_2026-07-27.md) before
+[automated-closure report](docs/audits/GATE_1_AUTOMATED_ENGINEERING_CLOSURE_2026-07-27.md) before
 continuing work.

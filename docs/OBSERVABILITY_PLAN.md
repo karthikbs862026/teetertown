@@ -17,6 +17,9 @@ boundaries.
   duplicate terminal result, and replay divergence.
 - WebGL context lost/restored, pointer cancel, resize/orientation, visibility, offline/online.
 - Resource counts and before/after level-unload report.
+- Release ID, asset-set hash, candidate install/verification/activation/recovery failure.
+- Bounded frame/physics p50/p95/p99/max, long-task count/time, first meaningful interaction, draw
+  calls, triangles, and explicit resource registries.
 
 ## Event structure
 

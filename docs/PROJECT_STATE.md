@@ -2,7 +2,7 @@
 
 **Updated:** 2026-07-27 UTC
 
-**Phase:** Phase 0 complete; Phase 1 graybox risk-laboratory blocker iteration
+**Phase:** Phase 0 complete; Phase 1 graybox automated engineering closure
 
 **Gate:** Gate 1 re-evaluated — **ITERATE**
 
@@ -10,18 +10,20 @@
 
 ## Objective and acceptance
 
-This cycle addressed the production JavaScript budget and unavailable local-browser blockers without
-changing Rapier `0.19.3`, physics configuration, content, control promise, or frozen outcomes.
+This cycle closes the locally executable Gate-1 engineering gaps without changing Rapier `0.19.3`,
+content, the player-facing control promise, or frozen golden/failure outcomes.
 
 Acceptance required:
 
-- every production JavaScript chunk at or below 650 KiB gzip and total output below 6 MiB gzip;
-- frozen bootstrap, golden, raw-failure, perturbation, and replay evidence unchanged;
-- an actual browser executing WebGL, golden parity, input cancellation, lifecycle, context loss,
-  camera, phone-emulation, and screenshot checks;
-- lab-only fault/parity tooling absent from production;
-- official Playwright Chromium, Firefox, WebKit, and phone-emulation projects actually run in CI,
-  with physical-device and player gaps kept explicit.
+- canonical contact ordering and explicit changed-command wake behavior with frozen Node/browser
+  summaries;
+- dedicated CCD control/treatment and 480-step joint-reversal probes in Node and every CI browser;
+- verified offline Rapier boot and atomic whole-release service-worker updates that fail closed on
+  HTTP, digest, or manifest-identity faults;
+- bounded frame/physics samples, first-interaction, draw/triangle, DOM, explicit resource, heap,
+  repeated-transition, and long-soak evidence;
+- unchanged bootstrap/golden/failure/content hashes, passing production budgets, and no lab leak;
+- physical-device/player gaps kept explicit.
 
 ## Last verified
 
@@ -38,11 +40,14 @@ Acceptance required:
 - Ten traces across ±5% magnitude and a one-step activation delay remain 10/10 successful.
 - Identical headless runs match periodic/final replay hashes; a perturbed command is detected.
 - Fifty headless simulation cycles retain exact `11/11/2` body/collider/joint topology.
-- Production JavaScript is 171.1 KiB gzip; separate WASM is 572.6 KiB gzip; total budget output is
-  1.34 MiB gzip. The gzip gates pass.
+- Physics policy is `phase1-physics-2`, configuration hash `53cfb827`, under ADR-0019. The exact
+  probe set is pileup/contact `0fe7d31e`, sleep/wake `b3c1c78a`, CCD `dd85d291`, and joint reversal
+  `b033984b`.
+- Production JavaScript is 173.4 KiB gzip; separate WASM is 572.6 KiB gzip; total budget output is
+  1.35 MiB gzip. The gzip gates pass.
 - Production lab-leak audit excludes adversarial content, controls, diagnostics markers, and the
   browser parity API.
-- Built-preview actual Chromium and Pixel 7 emulation: 21 passed, 3 viewport-intentional skips.
+- Built-preview actual Chromium and Pixel 7 emulation: 23 passed, 3 viewport-intentional skips.
 - Chromium cases include sustained-drag capture, exact browser/headless parity, paused restart,
   pointer cancel/lost capture, WebGL loss/restore with a frozen fixed-step counter, 20 scene
   transitions with one canvas/stable registries, and all three camera variants.
@@ -57,6 +62,16 @@ Acceptance required:
 - Five screenshots were visually inspected. Current tutorial/goal/causal geometry is visible on
   desktop and narrow Pixel emulation; perspective, bounded-event, and adversarial compositions are
   reviewable.
+- Generated schema-2 release manifests bind JavaScript and Rapier WASM to one release identity.
+  Chromium passes v1/v2 offline boot, HTTP/corrupt-WASM candidate rejection, between-session atomic
+  activation, old-cache removal, mixed-manifest fatal state, and explicit recovery.
+- The revised 30-second Chromium profile passed after 60 warm-up scene pairs and 154 measured
+  transitions: first interaction 553 ms; physics p95 1.1 ms; 30 calls/1,800 triangles; exact
+  registries; 43→43 listeners; +1.30% final/+2.39% maximum heap drift.
+- The no-retry 20-minute Chromium soak passed after a 300.610-second/980-cycle workload warm-up:
+  5,820 transitions retained exact resources; DOM `1/526/43` → `1/367/43`; forced-GC heap −0.67%
+  final with no positive measured peak; steady-frame p95 66.6 ms and physics p95 0.4 ms. These
+  software-rendered values are not physical-device tier evidence.
 
 ## Closed blockers
 
@@ -71,6 +86,12 @@ Acceptance required:
    browser projects.
 6. **Firefox/WebKit CI execution:** closed for official Playwright engine builds. Firefox uses
    headed Xvfb/software WebGL because GitHub's headless Linux runner cannot create its context.
+7. **Dedicated contact/sleep/CCD/joint assertions:** closed locally in Node and actual Chromium;
+   current-head CI browser repetition pending.
+8. **Separate-WASM offline/update atomicity:** closed for automated Chromium fault scope under
+   ADR-0013; physical storage pressure/eviction/update behavior remains open.
+9. **Browser profiling and bounded resource soak:** short and no-retry 20-minute local Chromium
+   profiles pass; current-head CI job remains pending.
 
 ## Remaining Gate-1 blockers
 
@@ -78,14 +99,14 @@ Acceptance required:
    memory, orientation, background/resume, or context evidence exists.
 2. No representative-player comprehension, correct-strategy repeatability, failure-attribution, or
    comfort evidence exists.
-3. Separate-WASM offline/service-worker update atomicity is unverified.
-4. Browser frame-time/heap/soak and real first-meaningful-interaction measurements are absent.
-5. Dedicated assertions for contact ordering, sleep/wake, CCD, and joint reversal remain incomplete.
+3. The automated-closure head must pass its non-retrying GitHub PWA/performance job and repeat all
+   exact physics probes in the official browser matrix before automated CI scope closes.
 
 ## Decisions and confidence
 
 - **Decided with current evidence:** exact Rapier version remains `0.19.3`; browser packaging uses
-  separate WASM; runtime variant is replay identity; lab tooling remains compile-time excluded.
+  separate WASM; runtime variant is replay identity; lab tooling remains compile-time excluded;
+  release sets are hash-verified/atomically activated; contacts and sleeping use ADR-0019 policy.
 - **Provisional:** fixed orthographic remains the gameplay-camera default; gravity-vector tilt and
   visible constrained capture remain leading candidates.
 - **Blocked:** final control/camera/capture selection, Gate-1 GO, physical-device tiers, and player
@@ -95,13 +116,12 @@ Acceptance required:
 
 ## Recommendation
 
-**ITERATE.** The payload, local-browser, and cross-browser CI blockers are resolved, but Gate 1
-cannot become **GO** without physical-device and representative-player evidence. Offline update,
-browser profiling/soak, and the remaining adversarial assertions also stay open.
+**ITERATE.** Automated engineering closure is locally green, including the 20-minute browser soak,
+and awaits current-head Actions confirmation. Gate 1 cannot become **GO** without physical-device
+and representative-player evidence even after automation closes.
 
 ## Next action
 
-Execute the prepared owner-run physical Android/iOS and representative-player protocols. In
-parallel, add offline WASM/service-worker fault coverage, browser profiling/soak, and dedicated
-contact-ordering, sleep/wake, CCD, and joint-reversal assertions. Do not expand campaign content or
-meta systems yet.
+Publish the closure commits to draft PR #1 and require every new Actions job to pass without retry.
+Then execute the prepared owner-run physical Android/iOS and representative-player protocols. Do not
+expand campaign content or meta systems yet.

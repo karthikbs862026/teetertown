@@ -57,5 +57,34 @@ first-load output above 6 MB blocks the provisional Phase-1 production-shaped bu
 - Vite still emits a raw/minified-size advisory because the JavaScript file is above 650 KiB raw.
   This is not the repository gate, which is explicitly gzip-based; it remains a review signal.
 - Built-preview Chromium reproduces bootstrap `74e1d58f` and golden step 278/hash `c965c01f`.
-- First meaningful interaction, browser frame time, physical-device memory, thermal, battery, and
-  network-startup budgets remain unmeasured.
+
+## Automated closure measurement — 2026-07-27
+
+- Production JavaScript: 743.6 KiB raw, 173.4 KiB gzip.
+- Rapier WASM: 1,533.4 KiB raw, 572.6 KiB gzip.
+- Generated manifest plus verified atomic service worker: 2.1 KiB gzip combined.
+- Total output reported by `check:budgets`: 1.35 MiB gzip.
+- Headless Node v24.14.0, 4,000 fixed steps: 0.2662 ms p95, 0.5423 ms p99, 8.4998 ms maximum. This
+  remains headless evidence.
+- Actual local packaged Chromium/SwiftShader, 30-second transition stress after heap stabilization:
+  60 warm-up scene pairs, 154 measured transitions, first meaningful interaction 553 ms, physics p95
+  1.1 ms, 30 draw calls, 1,800 triangles, exact `11/11/2` simulation and `31/30` geometry/material
+  registries, 43→43 DOM listeners, +1.30% final heap drift, and +2.39% maximum observed heap drift.
+- The same software-rendered run recorded a steady 180-frame p95 of 50.0 ms and transition-stress
+  frame p95 of 366.6 ms. It passes the deliberately broad 100 ms automation-health ceiling, not the
+  20/33 ms physical-device frame budgets. Transition rebuilds are not normal-play frame evidence.
+- The definitive no-retry run adds a 300.610-second/980-cycle workload warm-up before its
+  authoritative baseline, then measures 5,820 transitions over 1,200 seconds. Forced-GC heap changes
+  from 7,593,612 to 7,542,428 bytes (−0.67%) with no positive measured peak; DOM `1/526/43` becomes
+  `1/367/43`; explicit resources remain exact; steady-frame p95 is 66.6 ms, physics p95 0.4 ms, FMI
+  543 ms, and renderer load 30 calls/1,800 triangles.
+
+The performance test disables Playwright tracing while sampling heap, forces GC, requires at least
+60 scene-pair warm-ups and a stable three-sample plateau, and requires at least five minutes of the
+same workload before a 1,200-second baseline. It then requires at least 50 measured pairs. It fails
+on >5% drift at any timed checkpoint, changed resource counts, DOM/listener growth, physics p95
+
+> 8 ms, first interaction >5 s, or graybox draw/triangle budget excess.
+
+Physical-device frame time, input latency, memory pressure, thermal, battery, and throttled-network
+startup remain unmeasured and cannot be inferred from desktop software rendering.
