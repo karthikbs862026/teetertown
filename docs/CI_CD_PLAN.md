@@ -4,7 +4,7 @@
 
 1. Feature branch: local fast checks and optional lab artifact.
 2. Pull request: install integrity, static checks, unit/simulation/replay, budgets, content/assets,
-   Chromium smoke, targeted cross-browser/visual checks.
+   and Chromium/Firefox/WebKit plus Chromium/WebKit phone-emulation browser checks.
 3. Merge to `main`: immutable staging-shaped artifact tagged with code/content/physics/replay
    versions.
 4. Staging: smoke, replay, save migration, offline, lifecycle, diagnostic export, and rollback
@@ -23,6 +23,11 @@ service worker.
 
 ## Current skeleton limits
 
-GitHub Actions runs static/simulation/build checks and a Chromium job. Scheduled cross-browser,
-fuzz, soak, physical-device, staging hosting, artifact retention, and rollback execution remain
-unverified. No paid CI or deployment service was added.
+GitHub Actions is configured for static/simulation/build/budget checks and a Playwright matrix using
+Chromium, Firefox, WebKit, Pixel 7 emulation, and iPhone 13 emulation. The matrix must run on the
+draft PR before it becomes evidence; configuration alone is not a pass.
+
+Local built-preview evidence uses actual npm-packaged Chromium plus Pixel 7 viewport/device
+emulation. Scheduled fuzz/soak, physical devices, staging hosting, artifact retention, offline
+WASM/service-worker faults, and rollback execution remain unverified. No paid CI or deployment
+service was added.

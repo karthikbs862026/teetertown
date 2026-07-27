@@ -81,5 +81,10 @@ is owned or an object is in a precision threshold region.
 | Camera/art readability | Screenshot review  | Screenshot review       | Player review      | Player review       |
 | Thermal/memory         | Not representative | Not representative      | Gate required      | Gate required       |
 
-Gate 1 remains **HOLD** for control/camera selection until physical-device and representative-player
-evidence exists, even if automated tests pass.
+Actual Chromium desktop and Pixel 7 emulation now cover replay parity, cancellation, camera
+composition, and screenshot review for the graybox. These results reduce implementation risk but do
+not select the final control/camera winner.
+
+Gate 1 remains **blocked for final control/camera selection** until physical-device and
+representative-player evidence exists, even though the overall work recommendation remains
+**ITERATE**.

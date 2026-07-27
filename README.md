@@ -26,8 +26,10 @@ npm run test:e2e
 `npm run build` creates the public production-shaped artifact and excludes the internal lab UI.
 `npm run build:lab` includes the graybox experiment controls for review.
 
-Current Gate 1 recommendation is **ITERATE**: deterministic headless evidence passes, while browser,
-device, player, visual, and bundle-threshold evidence remains open. Read
-[docs/PROJECT_STATE.md](docs/PROJECT_STATE.md) and the
-[foundation evidence report](docs/audits/PHASE_0_1_FOUNDATION_EVIDENCE_2026-07-26.md) before
+Current Gate 1 recommendation is **ITERATE**: Node/Chromium deterministic evidence and the
+production bundle gate pass, while GitHub cross-browser CI, physical devices, representative
+players, offline WASM updates, and browser profiling remain open. Read
+[docs/PROJECT_STATE.md](docs/PROJECT_STATE.md), the
+[foundation report](docs/audits/PHASE_0_1_FOUNDATION_EVIDENCE_2026-07-26.md), and the
+[blocker-iteration report](docs/audits/GATE_1_BLOCKER_ITERATION_EVIDENCE_2026-07-27.md) before
 continuing work.

@@ -1,70 +1,93 @@
 # Project State
 
-**Updated:** 2026-07-26 UTC
+**Updated:** 2026-07-27 UTC
 
-**Phase:** Phase 0 complete; smallest Phase 1 graybox risk laboratory established
+**Phase:** Phase 0 complete; Phase 1 graybox risk-laboratory blocker iteration
 
-**Gate:** Gate 1 attempted — **ITERATE**
+**Gate:** Gate 1 re-evaluated — **ITERATE**
 
 **Branch:** `feat/teetertown-preproduction-foundation`
 
+## Objective and acceptance
+
+This cycle addressed the production JavaScript budget and unavailable local-browser blockers without
+changing Rapier `0.19.3`, physics configuration, content, control promise, or frozen outcomes.
+
+Acceptance required:
+
+- every production JavaScript chunk at or below 650 KiB gzip and total output below 6 MiB gzip;
+- frozen bootstrap, golden, raw-failure, perturbation, and replay evidence unchanged;
+- an actual browser executing WebGL, golden parity, input cancellation, lifecycle, context loss,
+  camera, phone-emulation, and screenshot checks;
+- lab-only fault/parity tooling absent from production;
+- Firefox/WebKit, physical-device, and player gaps kept explicit until actually run.
+
 ## Last verified
 
-- Canonical v2.1 governing files are byte-preserved in the repository.
-- Strict TypeScript, Vite, direct Three.js, and exact `@dimforge/rapier3d-compat@0.19.3` build from
-  the lockfile.
-- Tutorial content validates at hash `5aac8b9a`; adversarial lab at `1e4655f2`; material catalog at
-  `05d66915`.
-- Rapier bootstrap self-test matches frozen hash `74e1d58f`.
-- The constrained tutorial golden reaches success at step 278 with final state hash `c965c01f`.
-- The same command under raw capture exits bounds at step 264 with final hash `e18433eb`.
-- Gravity-vector tilt succeeds; the current kinematic-support comparison exits bounds at step 229
-  with hash `35a12c8c`. This is comparison evidence, not a selected production winner.
-- Ten tutorial traces across ±5% command magnitude and a one-step activation delay succeeded 10/10.
-- Two identical golden runs match every 30-step and final replay hash; a one-command perturbation
-  produces a detected divergence.
-- The adversarial fragile-threshold fixture classifies failure at step 46.
-- Fifty headless simulation create/play/dispose cycles retain exact `11/11/2` body/collider/joint
-  topology.
-- Headless Node profile over 4,000 fixed steps measured 0.2494 ms p95 and 9.4454 ms maximum. This is
-  not browser or device performance evidence.
-- Production build excludes adversarial data and internal controls.
+- Strict TypeScript, Vite, direct Three.js, exact `@dimforge/rapier3d-compat@0.19.3` for Node, and
+  exact `@dimforge/rapier3d@0.19.3` for the browser build install from the lockfile.
+- ADR-0018 emits browser Rapier as a same-origin WASM asset. Replay schema 2 records
+  `compat-embedded-node` or `modular-wasm-browser`.
+- Tutorial content remains hash `5aac8b9a`; adversarial lab `1e4655f2`; materials `05d66915`.
+- Rapier bootstrap remains `74e1d58f` in Node and actual Chromium.
+- The command-from-step-one constrained golden remains success at step 278/hash `c965c01f` in Node
+  and actual Chromium.
+- Raw capture remains `object_out_of_bounds` at step 264/hash `e18433eb`.
+- Ten traces across ±5% magnitude and a one-step activation delay remain 10/10 successful.
+- Identical headless runs match periodic/final replay hashes; a perturbed command is detected.
+- Fifty headless simulation cycles retain exact `11/11/2` body/collider/joint topology.
+- Production JavaScript is 171.1 KiB gzip; separate WASM is 572.6 KiB gzip; total budget output is
+  1.34 MiB gzip. The gzip gates pass.
+- Production lab-leak audit excludes adversarial content, controls, diagnostics markers, and the
+  browser parity API.
+- Built-preview actual Chromium and Pixel 7 emulation: 21 passed, 3 viewport-intentional skips.
+- Chromium cases include sustained-drag capture, exact browser/headless parity, paused restart,
+  pointer cancel/lost capture, WebGL loss/restore with a frozen fixed-step counter, 20 scene
+  transitions with one canvas/stable registries, and all three camera variants.
+- Five screenshots were visually inspected. Current tutorial/goal/causal geometry is visible on
+  desktop and narrow Pixel emulation; perspective, bounded-event, and adversarial compositions are
+  reviewable.
 
-## Gate blockers
+## Closed blockers
 
-1. The production JavaScript chunk is 950.1 KiB gzip, above the provisional 650 KiB review
-   threshold. The exact-pinned compatibility Rapier module is approximately 810 KiB gzip by itself.
-   Changing package/loader strategy requires an ADR and replay migration evidence.
-2. Playwright 1.62.0 is installed, but no browser binary exists in this workspace. Chromium download
-   returned a zero-byte/truncated archive, so browser, WebGL, screenshot, visual, render-lifecycle,
-   and emulated-phone claims remain not run.
-3. No physical Android or iOS/Safari determinism, latency, thermal, memory, lifecycle, or input
-   evidence exists.
-4. No representative player comprehension, correct-strategy execution, or failure-attribution
-   evidence exists.
-5. Camera variants and two-axis/track variants are executable in the lab but have not yet received
-   browser, device, or player comparison evidence.
+1. **Production JavaScript budget:** closed for the current build under ADR-0018.
+2. **No executable local browser:** closed for Chromium through a task-scoped npm-packaged
+   executable. This does not imply Firefox/WebKit or device evidence.
+3. **Narrow orthographic goal clipping:** corrected with a minimum horizontal frustum and unit,
+   browser-layout, and screenshot evidence.
+4. **Camera screenshot readiness ambiguity:** corrected with an explicit rendered camera-model
+   marker and fresh-frame wait.
+5. **Restart while paused silently retaining the paused clock:** corrected and covered in Chromium.
 
-## Observed incidents and decisions
+## Remaining Gate-1 blockers
 
-- A first control-law implementation oscillated under a constant command and reversed gravity
-  intent. It was replaced with a jerk/acceleration/speed-bounded convergent response and has a
-  regression test.
-- Raw capture visibly fails the scripted corridor while constrained and felt-assisted capture
-  succeed. The visible constrained basket remains the leading hypothesis; hidden rescue forces
-  remain prohibited.
-- Kinematic support currently performs worse than gravity-vector tilt on the golden command.
-  Gravity-vector remains the leading hypothesis, pending visual/device evidence.
-- The production lab-separation audit initially found emitted lab chunks. Compile-time guards now
-  eliminate the lab controls and adversarial content from production output.
+1. GitHub Actions has not yet reported the configured Firefox, WebKit, and mobile-WebKit runs.
+2. No physical Android Chrome or iPhone/iOS Safari determinism, touch latency, thermal, battery,
+   memory, orientation, background/resume, or context evidence exists.
+3. No representative-player comprehension, correct-strategy repeatability, failure-attribution, or
+   comfort evidence exists.
+4. Separate-WASM offline/service-worker update atomicity is unverified.
+5. Browser frame-time/heap/soak and real first-meaningful-interaction measurements are absent.
+6. Dedicated assertions for contact ordering, sleep/wake, CCD, and joint reversal remain incomplete.
+
+## Decisions and confidence
+
+- **Decided with current evidence:** exact Rapier version remains `0.19.3`; browser packaging uses
+  separate WASM; runtime variant is replay identity; lab tooling remains compile-time excluded.
+- **Provisional:** fixed orthographic remains the gameplay-camera default; gravity-vector tilt and
+  visible constrained capture remain leading candidates.
+- **Blocked:** final control/camera/capture selection, Gate-1 GO, physical-device tiers, and player
+  trust claims.
+- **Rejected:** threshold waiver, hidden rescue, physics downgrade for FPS, final art, mass content,
+  monetization, backend, production deployment, and cross-version ranked comparison.
 
 ## Recommendation
 
-**ITERATE.** The foundation proves deterministic headless control and classification behavior, but
-Gate 1 cannot pass without browser/device/player evidence and a resolved bundle review.
+**ITERATE.** The payload and local-browser blockers are resolved, but Gate 1 cannot become **GO**
+without cross-browser CI plus physical-device and representative-player evidence.
 
 ## Next action
 
-Run a measured ADR spike comparing the accepted compatibility Rapier loader against a separate-WASM
-loading strategy without changing physics version, then run CI Chromium/WebKit/Firefox smoke,
-screenshots, WebGL lifecycle tests, and representative phone checks on the selected build.
+Publish the reviewed blocker iteration to the feature branch, open a draft pull request, inspect the
+GitHub Actions matrix, and record its actual results. Then prepare owner-run physical Android/iOS
+and representative-player protocols; do not expand campaign content or meta systems yet.

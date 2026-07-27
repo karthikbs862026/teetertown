@@ -47,3 +47,15 @@ first-load output above 6 MB blocks the provisional Phase-1 production-shaped bu
 - Exact-pinned `@dimforge/rapier3d-compat@0.19.3` is approximately 810 KiB gzip before application
   bundling. Resolution requires an ADR-backed loader/package experiment; the threshold is not
   silently waived.
+
+## Blocker iteration measurement — 2026-07-27
+
+- ADR-0018 keeps Rapier `0.19.3` and emits its browser WASM separately.
+- Production JavaScript: 736.1 KiB raw, 171.1 KiB gzip — passes the 650 KiB gzip JavaScript gate.
+- Rapier WASM: 1,533.4 KiB raw, 572.6 KiB gzip.
+- Total output reported by `check:budgets`: 1.34 MiB gzip — passes the 6 MiB gate.
+- Vite still emits a raw/minified-size advisory because the JavaScript file is above 650 KiB raw.
+  This is not the repository gate, which is explicitly gzip-based; it remains a review signal.
+- Built-preview Chromium reproduces bootstrap `74e1d58f` and golden step 278/hash `c965c01f`.
+- First meaningful interaction, browser frame time, physical-device memory, thermal, battery, and
+  network-startup budgets remain unmeasured.

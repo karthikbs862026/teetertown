@@ -56,3 +56,15 @@ and an updated decision/ADR; tests are not weakened to make CI pass.
 | Mobile WebKit viewport   | Required                 | Not equivalent | Responsive/WebKit smoke                 |
 | Mid-range Android Chrome | No                       | Gate required  | Thumb latency, thermal, memory, replay  |
 | iPhone/iOS Safari        | No                       | Gate required  | WebKit lifecycle, audio, memory, replay |
+
+## Blocker-iteration status — 2026-07-27
+
+- Actual packaged Chromium: built-preview boot, sustained drag, exact golden parity, pause/restart,
+  pointer cancel/lost capture, WebGL context loss/restore, 20 scene transitions, three camera
+  variants, and desktop screenshots pass.
+- Pixel 7 project: the same Chromium executable with Playwright device/viewport emulation passes the
+  applicable checks and phone screenshot. This is not physical Android.
+- Firefox, desktop WebKit, and mobile WebKit are configured for the draft-PR workflow but remain not
+  run until GitHub Actions reports results.
+- Physical Android Chrome, iPhone/iOS Safari, representative-player trust, real input latency,
+  thermal/battery, and sustained memory remain Gate-1 blockers.
