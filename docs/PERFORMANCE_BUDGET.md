@@ -38,3 +38,12 @@ quality tiers.
 
 `scripts/check-budgets.ts` reports raw/gzip output. A JavaScript chunk above 650 KiB gzip or total
 first-load output above 6 MB blocks the provisional Phase-1 production-shaped build pending review.
+
+## First foundation measurement — 2026-07-26
+
+- Headless Node v24.14.0, 4,000 fixed steps: 0.2494 ms p95, 9.4454 ms maximum. This is not
+  browser/device evidence.
+- Production JavaScript: approximately 949 KiB gzip, so the 650 KiB chunk gate fails.
+- Exact-pinned `@dimforge/rapier3d-compat@0.19.3` is approximately 810 KiB gzip before application
+  bundling. Resolution requires an ADR-backed loader/package experiment; the threshold is not
+  silently waived.
