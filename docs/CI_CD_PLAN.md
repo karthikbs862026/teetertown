@@ -13,7 +13,10 @@
 5. Release candidate: manual owner approval after physical Android/iOS phase-gate evidence.
 6. Production: controlled deployment retaining the previous known-good compatible artifact.
 
-No production deployment is authorized in Phase 0/1.
+No public or general-audience production release is authorized in Phase 0/1. The owner explicitly
+authorized one account-restricted live build on 2026-07-27 solely to collect the remaining physical
+device and representative-player Gate-1 evidence. That evidence surface does not advance the gate or
+authorize wider access.
 
 ## Compatibility and rollback
 
@@ -40,3 +43,10 @@ Local built-preview evidence uses actual npm-packaged Chromium plus Pixel 7 view
 emulation. The engine split keeps failures attributable and avoids one browser hiding another's
 result. The current-head workflow is green at CI scope. Physical devices, staging hosting, full
 rollback deployment, and production remain unverified. No paid CI or deployment service was added.
+
+The account-restricted evidence build is
+[Teetertown Gate 1 playable](https://teetertown-game.karthik-bs86.chatgpt.site), Sites version 1. It
+serves immutable game release `c52b63d35d8d853c8c9eee85e7d9f624cb375057` with asset-set hash
+`5a90207a484a1048`; its hosting wrapper passed byte-identical root routing and all release-asset
+SHA-256/byte checks. This is distribution evidence, not physical-device, staging, rollback, or
+public-production evidence.
