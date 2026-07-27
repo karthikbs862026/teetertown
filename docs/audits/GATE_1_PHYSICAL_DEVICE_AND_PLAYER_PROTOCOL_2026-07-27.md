@@ -5,6 +5,12 @@ close any gate.
 
 ## 1. Build identity
 
+Use the owner-restricted [Gate-1 playable build](https://teetertown-game.karthik-bs86.chatgpt.site)
+for the current evidence round. Expected identity: commit/release
+`c52b63d35d8d853c8c9eee85e7d9f624cb375057`, asset set `5a90207a484a1048`, Rapier `0.19.3`, physics
+policy `phase1-physics-2`, replay schema 2, and production mode with no lab controls. Keep the
+session owner-supervised; widening access requires a separate owner decision.
+
 Before every session record:
 
 - Git commit and branch;
