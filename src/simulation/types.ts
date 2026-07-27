@@ -140,4 +140,6 @@ export interface ResourceCounts {
   readonly timers: number;
   readonly workers: number;
   readonly audioNodes: number;
+  readonly drawCalls: number;
+  readonly triangles: number;
 }

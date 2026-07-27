@@ -13,6 +13,7 @@ import {
   type LevelDefinition,
   type MaterialLibrary
 } from "./content";
+import { canonicalContact, compareContacts } from "./contactOrdering";
 import { loadLevelDefinition, MATERIAL_LIBRARY } from "./contentCatalog";
 import { commandTarget, createTiltCommand } from "./inputCommand";
 import {
@@ -67,7 +68,8 @@ export const PHYSICS_CONFIGURATION_HASH = hashText(
     solverIterations: 8,
     speedRunawayLimit: SPEED_RUNAWAY_LIMIT,
     softLockSteps: SOFT_LOCK_STEPS,
-    commandQuantization: 1024
+    commandQuantization: 1024,
+    sleepingWakePolicy: "quantized_command_change"
   })
 );
 
@@ -146,6 +148,8 @@ export class TeetertownSimulation {
   #tilt: TiltState = ZERO_TILT;
   #goalHoldSteps = 0;
   #stillSteps = 0;
+  #lastCommandX = 0;
+  #lastCommandZ = 0;
   #disposed = false;
 
   private constructor(
@@ -196,6 +200,7 @@ export class TeetertownSimulation {
       command.step === this.#step
         ? command
         : createTiltCommand(this.#step, commandTarget(command).x, commandTarget(command).z);
+    this.#wakeForCommandChange(normalizedCommand);
     this.#tilt = this.#tiltController.step(normalizedCommand);
     this.#applyTilt();
     this.#world.step(this.#eventQueue);
@@ -281,7 +286,9 @@ export class TeetertownSimulation {
       listeners: 0,
       timers: 0,
       workers: 0,
-      audioNodes: 0
+      audioNodes: 0,
+      drawCalls: 0,
+      triangles: 0
     };
   }
 
@@ -365,35 +372,55 @@ export class TeetertownSimulation {
 
   #collectContactForces(): void {
     const fragile = this.#level.fragility;
-    let stepImpulse = 0;
     this.#debugContacts.length = 0;
     this.#eventQueue.drainContactForceEvents((event) => {
       const first = this.#entityByCollider.get(event.collider1());
       const second = this.#entityByCollider.get(event.collider2());
       const impulse = event.totalForceMagnitude() * FIXED_TIMESTEP_SECONDS;
-      if (first !== undefined && second !== undefined && this.#debugContacts.length < 16) {
+      if (first !== undefined && second !== undefined) {
         const direction = event.maxForceDirection();
-        this.#debugContacts.push({
-          entityA: first,
-          entityB: second,
-          direction: { x: direction.x, y: direction.y, z: direction.z },
-          impulse
-        });
-      }
-      if (fragile !== null && (first === fragile.entity || second === fragile.entity)) {
-        stepImpulse += impulse;
+        this.#debugContacts.push(
+          canonicalContact(
+            first,
+            second,
+            { x: direction.x, y: direction.y, z: direction.z },
+            impulse
+          )
+        );
       }
     });
-    this.#debugContacts.sort((left, right) => {
-      const firstOrder = left.entityA.localeCompare(right.entityA);
-      return firstOrder === 0 ? left.entityB.localeCompare(right.entityB) : firstOrder;
-    });
+    this.#debugContacts.sort(compareContacts);
     if (fragile === null) {
+      this.#debugContacts.length = Math.min(this.#debugContacts.length, 16);
       return;
     }
+    let stepImpulse = 0;
+    for (const contact of this.#debugContacts) {
+      if (contact.entityA === fragile.entity || contact.entityB === fragile.entity) {
+        stepImpulse += contact.impulse;
+      }
+    }
+    this.#debugContacts.length = Math.min(this.#debugContacts.length, 16);
     this.#fragileImpulses.push(stepImpulse);
     while (this.#fragileImpulses.length > fragile.windowSteps) {
       this.#fragileImpulses.shift();
+    }
+  }
+
+  #wakeForCommandChange(command: QuantizedTiltCommand): void {
+    if (command.x === this.#lastCommandX && command.z === this.#lastCommandZ) {
+      return;
+    }
+    this.#lastCommandX = command.x;
+    this.#lastCommandZ = command.z;
+    for (const entity of this.#level.entities) {
+      if (entity.body.kind !== "dynamic") {
+        continue;
+      }
+      const body = this.#bodyById.get(entity.id);
+      if (body?.isSleeping() === true) {
+        body.wakeUp();
+      }
     }
   }
 

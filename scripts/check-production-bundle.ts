@@ -19,7 +19,8 @@ const forbiddenMarkers = [
   "Two-axis track",
   "data-lab",
   "Export diagnostics",
-  "__TEETERTOWN_LAB_API__"
+  "__TEETERTOWN_LAB_API__",
+  "phase1-risk-probes-2"
 ];
 const violations: string[] = [];
 for (const file of await filesBelow("dist")) {

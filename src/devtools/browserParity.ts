@@ -1,4 +1,5 @@
 import { createTiltCommand } from "../simulation/inputCommand";
+import { runPhysicsRiskProbes, type PhysicsRiskProbeResult } from "../simulation/physicsRiskProbes";
 import { assertRapierBootstrap } from "../simulation/rapierBootstrap";
 import { hashSimulationSnapshot } from "../simulation/stableHash";
 import {
@@ -41,13 +42,15 @@ declare global {
   interface Window {
     __TEETERTOWN_LAB_API__?: {
       readonly runGoldenParity: typeof runBrowserGoldenParity;
+      readonly runPhysicsRiskProbes: () => Promise<PhysicsRiskProbeResult>;
     };
   }
 }
 
 export function mountBrowserParityApi(): () => void {
   window.__TEETERTOWN_LAB_API__ = {
-    runGoldenParity: runBrowserGoldenParity
+    runGoldenParity: runBrowserGoldenParity,
+    runPhysicsRiskProbes
   };
   return () => {
     delete window.__TEETERTOWN_LAB_API__;

@@ -62,6 +62,50 @@ test("browser modular WASM reproduces the headless command-from-step-one golden"
   });
 });
 
+test("browser Rapier reproduces every dedicated physics-risk probe", async ({ page }) => {
+  await gotoReadyGraybox(page);
+  await page.waitForFunction(() => window.__TEETERTOWN_LAB_API__ !== undefined);
+  const probes = await page.evaluate(async () => {
+    const api = window.__TEETERTOWN_LAB_API__;
+    if (api === undefined) {
+      throw new Error("Browser parity API was not mounted.");
+    }
+    return api.runPhysicsRiskProbes();
+  });
+  expect(probes).toEqual({
+    probeVersion: "phase1-risk-probes-2",
+    contactOrdering: {
+      contactCount: 132,
+      stepsWithContacts: 43,
+      pileAtoBObserved: true,
+      pileBtoCObserved: true,
+      summaryHash: "0fe7d31e"
+    },
+    sleepingWake: {
+      sleepingBeforeCommand: true,
+      sleepingAfterCommand: false,
+      finalStateHash: "36f4ba00",
+      summaryHash: "b3c1c78a"
+    },
+    ccd: {
+      discretePositionAfterOneStep: 0.4,
+      ccdPositionAfterOneStep: -0.059961,
+      ccdPositionAfterTwoSteps: -0.039948,
+      ccdVelocityAfterTwoSteps: -0.000001,
+      summaryHash: "dd85d291"
+    },
+    jointReversal: {
+      minimumAngle: -0.249077,
+      maximumAngle: 0.291891,
+      maximumAngularSpeed: 1.381745,
+      finalAngle: -0.167359,
+      finalAngularSpeed: -1.067376,
+      finite: true,
+      summaryHash: "b033984b"
+    }
+  });
+});
+
 test("restarting a paused fixture resumes from a clean fixed-step clock", async ({ page }) => {
   await gotoReadyGraybox(page);
   const metrics = page.locator(".metrics");

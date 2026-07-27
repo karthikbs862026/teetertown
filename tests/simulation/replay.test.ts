@@ -11,7 +11,11 @@ import {
   TeetertownSimulation
 } from "../../src/simulation/teetertownSimulation";
 import type { CaptureAuthority, RuntimeExperimentOptions } from "../../src/simulation/types";
-import { RAPIER_RUNTIME_VARIANT, REPLAY_SCHEMA_VERSION } from "../../src/simulation/version";
+import {
+  PHYSICS_VERSION,
+  RAPIER_RUNTIME_VARIANT,
+  REPLAY_SCHEMA_VERSION
+} from "../../src/simulation/version";
 
 const BASE_OPTIONS: RuntimeExperimentOptions = {
   inputModel: "one_axis_raw",
@@ -52,6 +56,9 @@ describe("replay contract", () => {
     const replay = await recordGolden();
     expect(replay.metadata.rapierRuntimeVariant).toBe(RAPIER_RUNTIME_VARIANT);
     expect(replay.metadata.replaySchemaVersion).toBe(REPLAY_SCHEMA_VERSION);
+    expect(replay.metadata.physicsVersion).toBe("phase1-physics-2");
+    expect(PHYSICS_VERSION).toBe("phase1-physics-2");
+    expect(replay.metadata.physicsConfigurationHash).toBe("53cfb827");
   });
 
   it("repeats every periodic and final hash", async () => {

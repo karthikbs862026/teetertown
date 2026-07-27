@@ -233,7 +233,9 @@ export class GameRenderer {
       materials: render.materials,
       textures: render.textures,
       renderTargets: render.renderTargets,
-      listeners: render.listeners
+      listeners: render.listeners,
+      drawCalls: this.#renderer.info.render.calls,
+      triangles: this.#renderer.info.render.triangles
     };
   }
 
